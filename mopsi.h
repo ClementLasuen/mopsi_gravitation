@@ -14,17 +14,17 @@ const int G =1;
 
 
 
-FVector<FVector<float,3>,nb_planetes> f();
+FVector<FVector<float,3>,nb_planetes> f(); // ??? C'est quoi ???
 
 // ------------------------------------------- Fonctions pratiques ----------------------------------------
 
 float norme(FVector<float,3> v);
 FVector<FVector<float,3>,nb_planetes> interaction(FVector<FVector<float,3>,nb_planetes> q);
 
-
 FVector<FVector<float,3>,nb_planetes>* point_fixe(FVector<FVector<float,3>,nb_planetes> qn, FVector<FVector<float,3>,nb_planetes> pn );
 
 float ecart(FVector<FVector<float,3>,nb_planetes> q0, FVector<FVector<float,3>,nb_planetes> q1);
+
 
 //---------------------------------- Methodes d'integration -------------------------------------------
 
