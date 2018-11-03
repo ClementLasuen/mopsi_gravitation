@@ -21,11 +21,24 @@ FVector<FVector<float,3>,nb_planetes> f(); // ??? C'est quoi ???
 float norme(FVector<float,3> v);
 FVector<FVector<float,3>,nb_planetes> interaction(FVector<FVector<float,3>,nb_planetes> q);
 
-FVector<FVector<float,3>,nb_planetes>* point_fixe(FVector<FVector<float,3>,nb_planetes> qn, FVector<FVector<float,3>,nb_planetes> pn );
+//---------------------------------- Methodes d'integration -------------------------------------------
+
 
 float ecart(FVector<FVector<float,3>,nb_planetes> q0, FVector<FVector<float,3>,nb_planetes> q1);
 
+// Euler explicite
 
-//---------------------------------- Methodes d'integration -------------------------------------------
+FVector<FVector<float,3>,nb_planetes>* euler_explicite(FVector<FVector<float,3>,nb_planetes> q, FVector<FVector<float,3>,nb_planetes> p0, float masse);
+
+
+// Euler implicite
+
+FVector<FVector<float,3>,nb_planetes>* pf_euler_implicite(FVector<FVector<float,3>,nb_planetes> qn, FVector<FVector<float,3>,nb_planetes> pn );
 
 FVector<FVector<float,3>,nb_planetes>* euler_implicite(FVector<FVector<float,3>,nb_planetes> q, FVector<FVector<float,3>,nb_planetes> p0, float masse);
+
+// Euler symplectique
+
+FVector<FVector<float,3>,nb_planetes>* pf_euler_symplectique(FVector<FVector<float,3>,nb_planetes> qn, FVector<FVector<float,3>,nb_planetes> pn );
+
+FVector<FVector<float,3>,nb_planetes>* euler_symplectique(FVector<FVector<float,3>,nb_planetes> q, FVector<FVector<float,3>,nb_planetes> p0, float masse);
