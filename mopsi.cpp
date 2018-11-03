@@ -1,4 +1,3 @@
-
 #include"mopsi.h"
 
 
@@ -51,14 +50,16 @@ FVector<FVector<float,3>,nb_planetes>* point_fixe(FVector<FVector<float,3>,nb_pl
     return resu;
 }
 
-FVector<FVector<float,3>,nb_planetes>* euler_implicite(FVector<FVector<float,3>,nb_planetes> q0, FVector<FVector<float,3>,nb_planetes> p0){
+FVector<FVector<float,3>,nb_planetes>* euler_implicite(FVector<FVector<float,3>,nb_planetes> q0, FVector<FVector<float,3>,nb_planetes> p0, float masse){
 
     FVector<FVector<float,3>,nb_planetes>* resu = new FVector<FVector<float,3>,nb_planetes> [2*nb_iterations];
     resu[0]=q0;
     resu[nb_iterations]=p0;
     for(int i =1;i<nb_iterations;i++){
-        resu[i] = point_fixe(resu[i-1],resu[nb_iterations + i-1])[0];
-        resu[nb_iterations+i] = point_fixe(resu[i-1],resu[nb_iterations + i-1])[1];
+        FVector<FVector<float,3>,nb_planetes>* resu_ = new FVector<FVector<float,3>,nb_planetes> [2];
+        resu_ = point_fixe(resu[i-1],resu[nb_iterations + i-1], masse);
+        resu[i] = resu_[0];
+        resu[nb_iterations+i] = resu_[1];
     }
     return resu;
 }
