@@ -6,42 +6,49 @@ using namespace std;
 #include <Imagine/Graphics.h>
 using namespace Imagine;
 
+/*
+
+  Unites : UA, masse soleil, jour terrestre
+
+*/
+
 const int nb_planetes =2;
-const float h = 0.001;
-const int nb_iterations = 100;
-const float m [nb_planetes] = {1.0, 0.00095};
-const float G =2.959*0.0001;
+const double h = 10.;
+const int nb_iterations = 2*pow(10.,5.);
+const double m [nb_planetes] = {1.00000597682, 0.00095};
+const double G = 2.95912208286*pow(10.,-4.);
 
 // ------------------------------------------- Fonctions pratiques ----------------------------------------
 
-float norme(FVector<float,3> v);
+double norme(FVector<double,3> v);
 
-// interaction(q)[i] renvoie la résultante des forces exercées sur la planète i par les autres planètes
-// dont la position est donnée par q
-FVector<FVector<float,3>,nb_planetes> interaction(FVector<FVector<float,3>,nb_planetes> q);
+// interaction(q)[i] :
+// --> prend en entré la position q (vecteur n_planetes*3) de toute les planètes
+// --> renvoie la résultante des forces exercées sur la planète i par les autres planètes
+FVector<FVector<double,3>,nb_planetes> interaction(FVector<FVector<double,3>,nb_planetes> q0);
 
 //---------------------------------- Methodes d'integration -------------------------------------------
 
 // Renvoie une "distance" entre les positions q0 et q1
 // Utilisée dans la calcul du point fixe pour euler implicite
-float ecart(FVector<FVector<float,3>,nb_planetes> q0, FVector<FVector<float,3>,nb_planetes> q1);
+double ecart(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> q1);
 
 // Euler explicite
 
-FVector<FVector<float,3>,nb_planetes>* euler_explicite(FVector<FVector<float,3>,nb_planetes> q, FVector<FVector<float,3>,nb_planetes> p0, float masse);
+FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0);
 
 
 // Euler implicite
 
 // Calcule le point fixe à l'itération n
 // Ne prend pas en argument la masse car le tableau des masses est donné et CONSTANT
-FVector<FVector<float,3>,nb_planetes>* pf_euler_implicite(FVector<FVector<float,3>,nb_planetes> qn, FVector<FVector<float,3>,nb_planetes> pn );
+FVector<FVector<double,3>,nb_planetes>* pf_euler_implicite(FVector<FVector<double,3>,nb_planetes> qn, FVector<FVector<double,3>,nb_planetes> pn );
 
 // Renvoie l'ensemble des positions et des quantités de mouvement
-FVector<FVector<float,3>,nb_planetes>* euler_implicite(FVector<FVector<float,3>,nb_planetes> q, FVector<FVector<float,3>,nb_planetes> p0);
+FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0);
 
 // Euler symplectique
 
-FVector<FVector<float,3>,nb_planetes>* pf_euler_symplectique(FVector<FVector<float,3>,nb_planetes> qn, FVector<FVector<float,3>,nb_planetes> pn );
+FVector<FVector<double,3>,nb_planetes>* pf_euler_symplectique(FVector<FVector<double,3>,nb_planetes> qn, FVector<FVector<double,3>,nb_planetes> pn );
 
-FVector<FVector<float,3>,nb_planetes>* euler_symplectique(FVector<FVector<float,3>,nb_planetes> q, FVector<FVector<float,3>,nb_planetes> p0);
+FVector<FVector<double,3>,nb_planetes>* euler_symplectique(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0);

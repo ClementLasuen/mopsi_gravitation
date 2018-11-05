@@ -2,29 +2,27 @@
 
 // --------------------------------Fonctions pratiques---------------------------------
 
-float norme(FVector<float, 3> v){
+double norme(FVector<double, 3> v){
     return sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 }
 
-FVector<FVector<float, 3>, nb_planetes> interaction(FVector<FVector<float, 3>, nb_planetes> q){
-    FVector<FVector<float, 3>, nb_planetes> resu;
+FVector<FVector<double, 3>, nb_planetes> interaction(FVector<FVector<double, 3>, nb_planetes> q0){
+    FVector<FVector<double, 3>, nb_planetes> force;
     for(int i = 0;i<nb_planetes;i++){
-        resu[i] = {0.0,0.0,0.0};
+        force[i] = {0.0,0.0,0.0};
         for(int j = 0; j<nb_planetes;j++){
             if(j!=i){
-                resu[i] += (q[i] - q[j])*G* m[j] /(norme(q[i] - q[j])*norme(q[i] - q[j])*norme(q[i] - q[j]));
-
+                force[i] += -(q0[i] - q0[j])*G*m[j]*m[i]/pow(norme(q0[i] - q0[j]),3.);
             }
         }
-        cout << resu[i] << endl;
     }
-    return resu;
+    return force;
 }
 
 // ------------------------------------------Methodes d'integration------------------------------
 
-float ecart(FVector<FVector<float, 3>, nb_planetes> q0, FVector<FVector<float, 3>, nb_planetes> q1){
-    float resu = 0.0;
+double ecart(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> q1){
+    double resu = 0.0;
     for(int i=0;i<nb_planetes;i++){
         resu += norme(q0[i] - q1[i]);
     }
@@ -34,22 +32,22 @@ float ecart(FVector<FVector<float, 3>, nb_planetes> q0, FVector<FVector<float, 3
 
 // Euler explicite
 
-FVector<FVector<float,3>,nb_planetes>* euler_explicite(FVector<FVector<float,3>,nb_planetes> q0, FVector<FVector<float,3>,nb_planetes> p0, float masse){
+FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0){
 
-    FVector<FVector<float,3>,nb_planetes>* resu = new FVector<FVector<float,3>,nb_planetes> [2*nb_iterations];
+    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
     resu[0]=q0;
     resu[nb_iterations]=p0;
 
-    for(int i =1;i<nb_iterations;i++){
-        FVector<FVector<float,3>,nb_planetes>* resu_ = new FVector<FVector<float,3>,nb_planetes> [2];
+    for(int i=1;i<nb_iterations;i++){
+        FVector<FVector<double,3>,nb_planetes>* resu_ = new FVector<FVector<double,3>,nb_planetes> [2];
         for(int j=0;j<nb_planetes;j++){
             resu_[0][j] = resu[i-1][j];
             resu_[1][j] = resu[nb_iterations+i-1][j];
         }
-        FVector<FVector<float,3>,nb_planetes> p_point = interaction(resu_[0]);
+        FVector<FVector<double,3>,nb_planetes> p_point = interaction(resu_[0]);
         for(int j=0;j<nb_planetes;j++){
-            resu_[1][j] = resu_[1][j] + h*(interaction(resu_[0])[j]);
-            resu_[0][j] = resu_[0][j] + h*resu_[1][j];
+            resu_[0][j] = resu_[0][j] + h*resu_[1][j]/m[j];
+            resu_[1][j] = resu_[1][j] + h*p_point[j];
         }
         resu[i] = resu_[0];
         resu[nb_iterations+i] = resu_[1];
@@ -60,19 +58,19 @@ FVector<FVector<float,3>,nb_planetes>* euler_explicite(FVector<FVector<float,3>,
 // Euler imlicite
 
 
-FVector<FVector<float,3>,nb_planetes>* pf_euler_implicite(FVector<FVector<float,3>,nb_planetes> qn,FVector<FVector<float,3>,nb_planetes> pn ){
-    float epsilon = 0.0001; // precision comment choisir epsilon ?
+FVector<FVector<double,3>,nb_planetes>* pf_euler_implicite(FVector<FVector<double,3>,nb_planetes> qn,FVector<FVector<double,3>,nb_planetes> pn ){
+    double epsilon = 0.00001; // precision comment choisir epsilon ?
     int compteur =0;
-    FVector<FVector<float,3>,nb_planetes>* resu = new FVector<FVector<float,3>,nb_planetes> [2];
-    FVector<FVector<float,3>,nb_planetes> q0,q1,p0,p1;
+    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2];
+    FVector<FVector<double,3>,nb_planetes> q0,q1,p0,p1;
     q0 = qn;
     p0 = pn;
-    FVector<FVector<float, 3>, nb_planetes> force = interaction(q0);
+    FVector<FVector<double, 3>, nb_planetes> force = interaction(q0);
     for(int i =0;i<nb_planetes;i++){  // je pense qu'on peut eviter la boucle for et juste ajouter les vecteurs
-            q1[i] = qn[i] + h*p0[i]/m[i];
-            p1[i] = pn[i] + h*force[i]; // A CETTE ETAPE Q0 N'EST PAS TOTALEMENT CALCULEEEEE
+            q1[i] = q0[i] + h*p0[i]/m[i];
+            p1[i] = p0[i] + h*force[i]; // A CETTE ETAPE Q0 N'EST PAS TOTALEMENT CALCULEEEEE
     }
-    while( compteur<100 && max(ecart(q0,q1),ecart(p0,p1))> epsilon ){
+    while( compteur<10000 && max(ecart(q0,q1),ecart(p0,p1))> epsilon ){
 
         compteur+=1;
         q0=q1;
@@ -88,14 +86,14 @@ FVector<FVector<float,3>,nb_planetes>* pf_euler_implicite(FVector<FVector<float,
     return resu;
 }
 
-FVector<FVector<float,3>,nb_planetes>* euler_implicite(FVector<FVector<float,3>,nb_planetes> q0, FVector<FVector<float,3>,nb_planetes> p0){
+FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0){
 
-    FVector<FVector<float,3>,nb_planetes>* resu = new FVector<FVector<float,3>,nb_planetes> [2*nb_iterations];
+    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
     // resu[i] donne les positions de toutes les planètes à l'iteration i;
     // resu[i + nb_iterations] donne les quantites de mouvement
     resu[0]=q0;
     resu[nb_iterations]=p0;
-    FVector<FVector<float,3>,nb_planetes>* point_fixe = new FVector<FVector<float,3>,nb_planetes> [2];
+    FVector<FVector<double,3>,nb_planetes>* point_fixe = new FVector<FVector<double,3>,nb_planetes> [2];
     for(int i =1;i<nb_iterations;i++){
         point_fixe = pf_euler_implicite(resu[i-1],resu[i-1 + nb_iterations]);
         resu[i] = point_fixe[0];
@@ -107,11 +105,11 @@ FVector<FVector<float,3>,nb_planetes>* euler_implicite(FVector<FVector<float,3>,
 
 // Euler symplectique (implicite sur q, explicite sur p)
 
-FVector<FVector<float,3>,nb_planetes>* pf_euler_symplectique(FVector<FVector<float,3>,nb_planetes> qn,FVector<FVector<float,3>,nb_planetes> pn ){
-    float epsilon = 0.0001; // precision Comment choisir epsilon ?
+FVector<FVector<double,3>,nb_planetes>* pf_euler_symplectique(FVector<FVector<double,3>,nb_planetes> qn,FVector<FVector<double,3>,nb_planetes> pn ){
+    double epsilon = 0.0001; // precision Comment choisir epsilon ?
     int compteur =0;
-    FVector<FVector<float,3>,nb_planetes>* resu = new FVector<FVector<float,3>,nb_planetes> [2];
-    FVector<FVector<float,3>,nb_planetes> q0,q1,p0,p1;
+    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2];
+    FVector<FVector<double,3>,nb_planetes> q0,q1,p0,p1;
     for(int i =0;i<nb_planetes;i++){
             q0[i] = qn[i];
             p0[i] = pn[i];
@@ -132,13 +130,13 @@ FVector<FVector<float,3>,nb_planetes>* pf_euler_symplectique(FVector<FVector<flo
     return resu;
 }
 
-FVector<FVector<float,3>,nb_planetes>* euler_symplectique(FVector<FVector<float,3>,nb_planetes> q0, FVector<FVector<float,3>,nb_planetes> p0){
+FVector<FVector<double,3>,nb_planetes>* euler_symplectique(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0){
 
-    FVector<FVector<float,3>,nb_planetes>* resu = new FVector<FVector<float,3>,nb_planetes> [2*nb_iterations];
+    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
     resu[0]=q0;
     resu[nb_iterations]=p0;
     for(int i =1;i<nb_iterations;i++){
-        FVector<FVector<float,3>,nb_planetes>* resu_ = new FVector<FVector<float,3>,nb_planetes> [2];
+        FVector<FVector<double,3>,nb_planetes>* resu_ = new FVector<FVector<double,3>,nb_planetes> [2];
         resu_ = pf_euler_symplectique(resu[i-1],resu[nb_iterations + i-1]);
         resu[i] = resu_[0];
         resu[nb_iterations+i] = resu_[1];
