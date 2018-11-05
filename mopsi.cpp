@@ -51,6 +51,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
         }
         resu[i] = resu_[0];
         resu[nb_iterations+i] = resu_[1];
+        delete[] resu_;
     }
     return resu;
 }

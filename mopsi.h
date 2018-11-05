@@ -13,8 +13,8 @@ using namespace Imagine;
 */
 
 const int nb_planetes =2;
-const double h = 10.;
-const int nb_iterations = 2*pow(10.,5.);
+const double h = 1.;
+const int nb_iterations = 2*pow(10.,4.);
 const double m [nb_planetes] = {1.00000597682, 0.00095};
 const double G = 2.95912208286*pow(10.,-4.);
 
@@ -45,7 +45,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
 FVector<FVector<double,3>,nb_planetes>* pf_euler_implicite(FVector<FVector<double,3>,nb_planetes> qn, FVector<FVector<double,3>,nb_planetes> pn );
 
 // Renvoie l'ensemble des positions et des quantités de mouvement
-FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0);
+FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0);
 
 // Euler symplectique
 
