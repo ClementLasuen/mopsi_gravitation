@@ -7,6 +7,7 @@ find_package(Imagine REQUIRED)
 project(MOPSI)
 add_executable(MOPSI
                main.cpp
-               mopsi.cpp mopsi.h)
+               mopsi.cpp mopsi.h
+               ecriture.cpp ecriture.h)
 
 ImagineUseModules(MOPSI Graphics)
