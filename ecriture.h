@@ -1,5 +1,8 @@
 #pragma once
 
 #include <string>
+#include <fstream>
 
-void ecriture(string file_name);
+using namespace std;
+
+void ecriture(string file_name, FVector<FVector<double, _Tp2>, nb_planetes> *trajectory);
