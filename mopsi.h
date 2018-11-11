@@ -1,16 +1,18 @@
 #pragma once
 #include<vector>
 #include<iostream>
+#include<fstream>
+#include<string>
 using namespace std;
 #include<cmath>
 #include <Imagine/Graphics.h>
 using namespace Imagine;
 
-const int nb_planetes =2;
+const int nb_planetes =5;
 const double h = 10;
-const int nb_iterations = 1000;
-const double m [nb_planetes] = {1.0, 0.00029};
-const double G =2.959*0.0001;
+const int nb_iterations = 10000;
+const double m [nb_planetes] = {1.0,0.0009548, 0.00029, 0.0000437, 0.0000518};
+const double G =2.959122*0.0001;
 
 // ------------------------------------------- Fonctions pratiques ----------------------------------------
 
