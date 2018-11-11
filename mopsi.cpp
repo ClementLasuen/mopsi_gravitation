@@ -45,28 +45,46 @@ double ecart(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double
 
 // Euler explicite
 
-FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0){
+FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
 
-    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
-    resu[0]=q0;
-    resu[nb_iterations]=p0;
+    string file_name = str("Datas/euler_explicite_")+str(nb_iterations)+str("_")+str(h);
+    ofstream fichier(file_name.c_str(), ios::out|ios::app); // On va ecrire a la fin du fichier
+    if (fichier){
+        if(ecriture){
+            fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
+            for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
+                fichier << m[j]<<" ";
+            fichier <<endl;
+            for(int j=0;j<nb_planetes;j++)
+                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << p0[j][0] << " " << p0[j][1] << " " << p0[j][2] << endl;; // On ecrit les conditions initiales
+        }
+        FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
+        resu[0]=q0;
+        resu[nb_iterations]=p0;
 
-    for(int i=1;i<nb_iterations;i++){
-        FVector<FVector<double,3>,nb_planetes>* resu_ = new FVector<FVector<double,3>,nb_planetes> [2];
-        for(int j=0;j<nb_planetes;j++){
-            resu_[0][j] = resu[i-1][j];
-            resu_[1][j] = resu[nb_iterations+i-1][j];
+        for(int i=1;i<nb_iterations;i++){
+            FVector<FVector<double,3>,nb_planetes>* resu_ = new FVector<FVector<double,3>,nb_planetes> [2];
+            for(int j=0;j<nb_planetes;j++){
+                resu_[0][j] = resu[i-1][j];
+                resu_[1][j] = resu[nb_iterations+i-1][j];
+            }
+            FVector<FVector<double,3>,nb_planetes> p_point = interaction(resu_[0]);
+            for(int j=0;j<nb_planetes;j++){
+                resu_[0][j] = resu_[0][j] + h*resu_[1][j]/m[j];
+                resu_[1][j] = resu_[1][j] + h*p_point[j];
+            }
+            resu[i] = resu_[0];
+            resu[nb_iterations+i] = resu_[1];
+            if(ecriture){
+                fichier << resu_[0][j][0] << " " << resu_[0][j][1] << " " << resu_[0][j][2] << resu_[1][j][0]/m[j] << " " << resu_[1][j][1]/m[j] << " " << resu_[1][j][2]/m[j] << endl; // On ecrit les conditions initiales
+            }
+            delete[] resu_;
         }
-        FVector<FVector<double,3>,nb_planetes> p_point = interaction(resu_[0]);
-        for(int j=0;j<nb_planetes;j++){
-            resu_[0][j] = resu_[0][j] + h*resu_[1][j]/m[j];
-            resu_[1][j] = resu_[1][j] + h*p_point[j];
-        }
-        resu[i] = resu_[0];
-        resu[nb_iterations+i] = resu_[1];
-        delete[] resu_;
+        return resu;
     }
-    return resu;
+    else{
+        cerr<<"Impossible d'ouvrir le fichier"<<endl;
+    }
 }
 
 // Euler imlicite
