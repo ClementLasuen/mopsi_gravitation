@@ -1,4 +1,5 @@
-#include"mopsi.h"
+#include "mopsi.h"
+#include "ecriture.h"
 
 
 
