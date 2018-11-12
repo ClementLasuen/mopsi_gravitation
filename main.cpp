@@ -60,13 +60,15 @@ int main()
 
     endGraphics();*/
 
-    /*ofstream valeur_H("C:/Users/Utilisateur/Downloads/Tp2_Initial/Tennis/test_h.txt");
+    // ------------ ecriture de H -----------
+
+    ofstream valeur_H("../mopsi_gravitation/Datas/test_h.txt");
     if(valeur_H){
         for(int i =0; i<nb_iterations;i++){
             valeur_H << H(resu[i],resu[i+nb_iterations]) << endl;
         }
     }
-    else cout << "pb ouverture" << endl;*/
+    else cout << "pb ouverture" << endl;
 
 	return 0;
 }

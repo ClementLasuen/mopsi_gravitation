@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+def get_data(file_path):
+    # prend le fichier renvoyé par le code C++ pour une trajectoire
+    # renvoie le nombre d'iteration, le nombre de planetes, la liste des position de toutes les planetes a chaque temps, la liste des vitesses de toutes les planetes a chaque temps
+    with open("Datas/test_h.txt") as datas:
+        lines = list(map(str.rstrip, datas.readlines()))
+        metadatas = lines[0].split(' ')
+        nb_iterations = int(metadatas[0])
+        nb_planetes = int(metadatas[1])
+        liste_m = np.array([0. for i in range(nb_planetes)])
+        masses = lines[1].split(' ')
+        for i in range(nb_planetes):
+            liste_m[i] = float(masses[i])
+        positions = np.zeros((nb_iterations,nb_planetes,3), dtype=float)
+        vitesses = np.zeros((nb_iterations,nb_planetes,3), dtype=float)
+        for i in range(nb_iterations):
+            coordonnees = lines[2+i].split('')
+            for j in range(nb_planetes):
+                positions[i,j,0] = float(coordonnees[6*j+0])
+                positions[i,j,1] = float(coordonnees[6*j+1])
+                positions[i,j,2] = float(coordonnees[6*j+2])
+                vitesses[i,j,0] = float(coordonnees[6*j+3])
+                vitesses[i,j,1] = float(coordonnees[6*j+4])
+                vitesses[i,j,2] = float(coordonnees[6*j+5])
+        return(nb_iterations,nb_planetes,positions,vitesses)
+
+def plot_H(nb_iterations):
+    resu=[]
+    with open("Datas/test_h.txt") as f:
+        for i in range(nb_iterations):
+            texte = f.readline()
+            resu.append(float(texte))
+    print(len(resu))
+    X=[i for i in range(nb_iterations)]
+    plt.plot(X,resu)
+    plt.show()
