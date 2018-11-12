@@ -3,11 +3,13 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
 
 def get_data(file_path):
+    path = "/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/"+file_path
     # prend le fichier renvoyé par le code C++ pour une trajectoire
     # renvoie le nombre d'iteration, le nombre de planetes, la liste des position de toutes les planetes a chaque temps, la liste des vitesses de toutes les planetes a chaque temps
-    with open("Datas/test_h.txt") as datas:
+    with open(path) as datas:
         lines = list(map(str.rstrip, datas.readlines()))
         metadatas = lines[0].split(' ')
         nb_iterations = int(metadatas[0])
@@ -19,7 +21,7 @@ def get_data(file_path):
         positions = np.zeros((nb_iterations,nb_planetes,3), dtype=float)
         vitesses = np.zeros((nb_iterations,nb_planetes,3), dtype=float)
         for i in range(nb_iterations):
-            coordonnees = lines[2+i].split('')
+            coordonnees = lines[2+i].split(' ')
             for j in range(nb_planetes):
                 positions[i,j,0] = float(coordonnees[6*j+0])
                 positions[i,j,1] = float(coordonnees[6*j+1])
@@ -39,3 +41,17 @@ def plot_H(nb_iterations):
     X=[i for i in range(nb_iterations)]
     plt.plot(X,resu)
     plt.show()
+    
+
+#%% Affichage trajectoires
+
+file_path = "Datas/euler_implicite.txt"
+
+nb_iterations,nb_planetes,positions,vitesses = get_data(file_path)
+
+ax = plt.gca(projection='3d')
+ax.plot([0.],[0.],[0.],'o',label='Soleil')
+ax.plot(positions[:,1,0],positions[:,1,1],positions[:,1,2],label='Jupiter')
+plt.legend()
+plt.axis('equal')
+plt.show()
