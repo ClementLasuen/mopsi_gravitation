@@ -109,7 +109,7 @@ FVector<FVector<double, 3>, nb_planetes> *pf_euler_implicite(FVector<FVector<dou
             q1[i] = qn[i] + h*p0[i]/m[i];
             p1[i] = pn[i] + h*force[i];
     }
-    while( compteur<100 && max(ecart(q0,q1),ecart(p0,p1))> epsilon ){
+    while( compteur<10000 && max(ecart(q0,q1),ecart(p0,p1))> epsilon ){
 
         compteur+=1;
         q0=q1;
@@ -236,7 +236,7 @@ void changement_variables(FVector<FVector<double, 3>, nb_planetes> &p){
     }
 }
 
-FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0){
+FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
     FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [3*nb_iterations];
 
     // resu[i] donne les positions de toutes les planètes à l'iteration i;
@@ -286,9 +286,10 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_
             }
         }
         return resu;
-        else{
-            cerr<<"Impossible d'ouvrir le fichier"<<endl;
-        }
+    }
+    else{
+        cerr<<"Impossible d'ouvrir le fichier"<<endl;
+    }
 }
 
 // Ne pas oublier de le faire lorsque on appelle interaction -> force/masse
