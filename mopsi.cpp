@@ -47,8 +47,8 @@ double ecart(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double
 
 FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
 
-    string file_name = string("euler_explicite.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
-    ofstream fichier(file_name.c_str(), ios::out|ios::app); // On va ecrire a la fin du fichier
+    string file_name = string("../mopsi_gravitation/Datas/euler_explicite.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
+    ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
             cout <<"OK"<<endl;
