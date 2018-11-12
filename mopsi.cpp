@@ -98,7 +98,37 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
 
 
 FVector<FVector<double, 3>, nb_planetes> *pf_euler_implicite(FVector<FVector<double, 3>, nb_planetes> qn, FVector<FVector<double, 3>, nb_planetes> pn ){
+    double epsilon = 0.000001; // precision comment choisir epsilon ?
+    int compteur =0;
+    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2];
+    FVector<FVector<double,3>,nb_planetes> q0,q1,p0,p1;
+    q0 = qn;
+    p0 = pn;
+    FVector<FVector<double, 3>, nb_planetes> force = interaction(q0);
+    for(int i =0;i<nb_planetes;i++){  // je pense qu'on peut eviter la boucle for et juste ajouter les vecteurs
+            q1[i] = qn[i] + h*p0[i]/m[i];
+            p1[i] = pn[i] + h*force[i];
+    }
+    while( compteur<100 && max(ecart(q0,q1),ecart(p0,p1))> epsilon ){
 
+        compteur+=1;
+        q0=q1;
+        p0=p1;
+        force = interaction(q0);
+        for(int i =0;i<nb_planetes;i++){
+                q1[i] = qn[i] + h*p0[i]/m[i];
+                p1[i] = pn[i] + h*force[i];
+        }
+    }
+    resu[0] = q1;
+    resu[1] = p1;
+    return resu;
+}
+
+FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0){
+
+    string file_name = string("../mopsi_gravitation/Datas/euler_explicite.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
+    ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
             cout <<"OK"<<endl;
@@ -107,60 +137,30 @@ FVector<FVector<double, 3>, nb_planetes> *pf_euler_implicite(FVector<FVector<dou
                 fichier << m[j]<<" ";
             fichier <<endl;
             for(int j=0;j<nb_planetes;j++)
-                fichier << qn[j][0] << " " << qn[j][1] << " " << qn[j][2] << " " << pn[j][0] << " " << pn[j][1] << " " << pn[j][2] << " "; // On ecrit les conditions initiales
+                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0] << " " << p0[j][1] << " " << p0[j][2] << " "; // On ecrit les conditions initiales
             fichier << endl;
         }
-        double epsilon = 0.000001; // precision comment choisir epsilon ?
-        int compteur =0;
-        FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2];
-        FVector<FVector<double,3>,nb_planetes> q0,q1,p0,p1;
-        q0 = qn;
-        p0 = pn;
-        FVector<FVector<double, 3>, nb_planetes> force = interaction(q0);
-        for(int i =0;i<nb_planetes;i++){  // je pense qu'on peut eviter la boucle for et juste ajouter les vecteurs
-                q1[i] = qn[i] + h*p0[i]/m[i];
-                p1[i] = pn[i] + h*force[i];
-        }
-        while( compteur<100 && max(ecart(q0,q1),ecart(p0,p1))> epsilon ){
-
-            compteur+=1;
-            q0=q1;
-            p0=p1;
-            force = interaction(q0);
-            for(int i =0;i<nb_planetes;i++){
-                    q1[i] = qn[i] + h*p0[i]/m[i];
-                    p1[i] = pn[i] + h*force[i];
+        FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
+        // resu[i] donne les positions de toutes les planètes à l'iteration i;
+        // resu[i + nb_iterations] donne les quantites de mouvement
+        resu[0]=q0;
+        resu[nb_iterations]=p0;
+        FVector<FVector<double,3>,nb_planetes>* point_fixe = new FVector<FVector<double,3>,nb_planetes> [2];
+        for(int i =1;i<nb_iterations;i++){
+            point_fixe = pf_euler_implicite(resu[i-1],resu[i-1 + nb_iterations]);
+            resu[i] = point_fixe[0];
+            resu[nb_iterations+i] = point_fixe[1];
+            if(ecriture){
+                for(int j=0;j<nb_planetes;j++)
+                    fichier << resu[i][j][0] << " " << resu[i][j][1] << " " << resu[i][j][2] << " " << resu[nb_iterations+i][j][0]/m[j] << " " << resu[nb_iterations+i][j][1]/m[j] << " " << resu[nb_iterations+i][j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
+            fichier << endl;
             }
-        }
-        resu[0] = q1;
-        resu[1] = p1;
-        if(ecriture){
-            for(int j=0;j<nb_planetes;j++)
-                fichier << q1[j][0] << " " << q1[j][1] << " " << q1[j][2] << " " << p1[j][0]/m[j] << " " << p1[j][1]/m[j] << " " << p1[j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
-        fichier << endl;
         }
         return resu;
     }
     else{
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
     }
-}
-
-FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0){
-
-    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
-    // resu[i] donne les positions de toutes les planètes à l'iteration i;
-    // resu[i + nb_iterations] donne les quantites de mouvement
-    resu[0]=q0;
-    resu[nb_iterations]=p0;
-    FVector<FVector<double,3>,nb_planetes>* point_fixe = new FVector<FVector<double,3>,nb_planetes> [2];
-    for(int i =1;i<nb_iterations;i++){
-        point_fixe = pf_euler_implicite(resu[i-1],resu[i-1 + nb_iterations]);
-        resu[i] = point_fixe[0];
-        resu[nb_iterations+i] = point_fixe[1];
-
-    }
-    return resu;
 }
 
 // Euler symplectique (implicite sur q, explicite sur p)

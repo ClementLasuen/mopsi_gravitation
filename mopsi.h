@@ -45,6 +45,10 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
 // Calcule le point fixe à l'itération n
 // Ne prend pas en argument la masse car le tableau des masses est donné et CONSTANT
 FVector<FVector<double,3>,nb_planetes>* pf_euler_implicite(FVector<FVector<double,3>,nb_planetes> qn,FVector<FVector<double,3>,nb_planetes> pn );
+/* ecrit un fichier avec pour premiere ligne le nombre d'iterations puis le nombre de planetes
+   En deuxieme ligne il y a la masse de toute les planetes
+   Vient ensuite n_iterations lignes avec les coordonnes puis les vitesses de toutes les planetes (donc nb_iterations lignes de 6*nb_planete nombres)
+*/
 
 // Renvoie l'ensemble des positions et des quantités de mouvement
 FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0);
