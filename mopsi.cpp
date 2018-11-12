@@ -47,10 +47,11 @@ double ecart(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double
 
 FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
 
-    string file_name = str("Datas/euler_explicite_")+str(nb_iterations)+str("_")+str(h);
+    string file_name = string("euler_explicite.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
     ofstream fichier(file_name.c_str(), ios::out|ios::app); // On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
+            cout <<"OK"<<endl;
             fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
             for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
                 fichier << m[j]<<" ";
@@ -76,10 +77,12 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
             resu[i] = resu_[0];
             resu[nb_iterations+i] = resu_[1];
             if(ecriture){
-                fichier << resu_[0][j][0] << " " << resu_[0][j][1] << " " << resu_[0][j][2] << resu_[1][j][0]/m[j] << " " << resu_[1][j][1]/m[j] << " " << resu_[1][j][2]/m[j] << endl; // On ecrit les conditions initiales
+                for(int j=0;j<nb_planetes;j++)
+                    fichier << resu_[0][j][0] << " " << resu_[0][j][1] << " " << resu_[0][j][2] << resu_[1][j][0]/m[j] << " " << resu_[1][j][1]/m[j] << " " << resu_[1][j][2]/m[j] << endl; // On ecrit les conditions initiales
             }
             delete[] resu_;
         }
+        fichier.close();
         return resu;
     }
     else{

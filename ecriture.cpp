@@ -11,12 +11,12 @@ void ecriture(string file_name, FVector<FVector<double, 3>, nb_planetes>* trajec
         for(int i=0;i<nb_iterations;i++){
             FVector<FVector<double, 3>, nb_planetes> coordonnees = trajectory[i];
             for(int j=0;j<nb_planetes;j++)
-                fichier << coordonnees[j][0] << " " << coordonnes[j][1] << " " << coordonnes[j][2] <<endl;; // On ecrit les trajectoires uniquement
+                fichier << coordonnees[j][0] << " " << coordonnees[j][1] << " " << coordonnees[j][2] <<endl;; // On ecrit les trajectoires uniquement
         }
         for(int i=0;i<nb_iterations;i++){
-            FVector<FVector<double, 3>, nb_planetes> vitesses = trajectory[nb_iterations+i]/m;
+            FVector<FVector<double, 3>, nb_planetes> q_mvt = trajectory[nb_iterations+i];
             for(int j=0;j<nb_planetes;j++)
-                fichier << vitesses[j][0] << " " << vitesses[j][1] << " " << vitesses[j][2] <<endl; // On ecrit les vitesses uniquement
+                fichier << q_mvt[j][0]/m[j] << " " << q_mvt[j][1]/m[j] << " " << q_mvt[j][2]/m[j] <<endl; // On ecrit les vitesses uniquement
         }
     }
     else{
