@@ -21,6 +21,8 @@ FVector<FVector<double, 3>, nb_planetes> interaction(FVector<FVector<double, 3>,
     return resu;
 }
 
+// --------------------------------------- Hamiltonien ------------------------------------------
+
 double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p){
     double resu = norme(p[0])*norme(p[0])/(2*m[0]) ;
     for(int i =1;i<nb_planetes;i++){
@@ -57,7 +59,8 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
                 fichier << m[j]<<" ";
             fichier <<endl;
             for(int j=0;j<nb_planetes;j++)
-                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << p0[j][0] << " " << p0[j][1] << " " << p0[j][2] << endl;; // On ecrit les conditions initiales
+                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0] << " " << p0[j][1] << " " << p0[j][2] << " "; // On ecrit les conditions initiales
+            fichier << endl;
         }
         FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
         resu[0]=q0;
@@ -78,7 +81,8 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
             resu[nb_iterations+i] = resu_[1];
             if(ecriture){
                 for(int j=0;j<nb_planetes;j++)
-                    fichier << resu_[0][j][0] << " " << resu_[0][j][1] << " " << resu_[0][j][2] << resu_[1][j][0]/m[j] << " " << resu_[1][j][1]/m[j] << " " << resu_[1][j][2]/m[j] << endl; // On ecrit les conditions initiales
+                    fichier << resu_[0][j][0] << " " << resu_[0][j][1] << " " << resu_[0][j][2] << " " << resu_[1][j][0]/m[j] << " " << resu_[1][j][1]/m[j] << " " << resu_[1][j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
+            fichier << endl;
             }
             delete[] resu_;
         }

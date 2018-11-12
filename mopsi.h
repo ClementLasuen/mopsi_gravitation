@@ -22,6 +22,8 @@ double norme(FVector<double,3> v);
 // dont la position est donnée par q
 FVector<FVector<double,3>,nb_planetes> interaction(FVector<FVector<double,3>,nb_planetes> q);
 
+// ----------------------------------------- Hamiltonien----------------------------------------------
+
 double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p);
 
 //---------------------------------- Methodes d'integration -------------------------------------------
@@ -35,7 +37,7 @@ double ecart(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3
 FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
 /* ecrit un fichier avec pour premiere ligne le nombre d'iterations puis le nombre de planetes
    En deuxieme ligne il y a la masse de toute les planetes
-   Vient ensuite n_iterations lignes avec les coordonnes de toutes les planetes puis les vitesses de toutes les planètes (donc nb_iterations lignes de 6*nb_planete nombres)
+   Vient ensuite n_iterations lignes avec les coordonnes puis les vitesses de toutes les planetes (donc nb_iterations lignes de 6*nb_planete nombres)
 */
 
 // Euler implicite
