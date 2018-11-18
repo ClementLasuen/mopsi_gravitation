@@ -3,7 +3,6 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.mplot3d import Axes3D
 
 def get_data(file_path):
     path = "/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/"+file_path
@@ -45,7 +44,7 @@ def plot_H(nb_iterations):
 
 #%% Affichage trajectoires
 
-file_path = "Datas/euler_implicite.txt"
+file_path = "Datas/verlet.txt"
 
 nb_iterations,nb_planetes,positions,vitesses = get_data(file_path)
 

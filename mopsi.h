@@ -9,9 +9,9 @@ using namespace std;
 using namespace Imagine;
 
 const int nb_planetes =5;
-const double h = 10;
-const int nb_iterations = 900;
-const double m [nb_planetes] = {1.0,0.0009548, 0.00029, 0.0000437, 0.0000518};
+const double h = 1;
+const int nb_iterations = 100000;
+const double m [nb_planetes] = {1.00000597682,0.0009548, 0.00029, 0.0000437, 0.0000518};
 const double G =2.959122*0.0001;
 
 // ------------------------------------------- Fonctions pratiques ----------------------------------------
