@@ -28,7 +28,7 @@ import numpy as np
 def get_data():
     # prend le fichier renvoyé par le code C++ pour une trajectoire
     # renvoie le nombre d'iteration, le nombre de planetes, la liste des position de toutes les planetes a chaque temps, la liste des vitesses de toutes les planetes a chaque temps
-    with open("verlet.txt") as datas:
+    with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/euler_explicite.txt") as datas:
         lines = list(map(str.rstrip, datas.readlines()))
         metadatas = lines[0].split(' ')
         nb_iterations = int(metadatas[0])
@@ -57,7 +57,7 @@ pos1=vector(positions[0][0][0],positions[0][0][1],positions[0][0][2])
 soleil = sphere(pos=agrandissement*pos1,radius =4,color=color.yellow)
 
 pos1=vector(positions[0][1][0],positions[0][1][1],positions[0][1][2])
-jupiter = sphere(pos=agrandissement*pos1,radius =2,color=color.red)
+jupiter = sphere(pos=agrandissement*pos1,radius =2,color=color.red, make_trail=True)
 
 pos1=vector(positions[0][2][0],positions[0][2][1],positions[0][2][2])
 saturne = sphere(pos=agrandissement*pos1,radius =2,color=color.white)
@@ -81,9 +81,11 @@ for i in range(nb_iterations):
     
     pos1=vector(positions[i][3][0],positions[i][3][1],positions[i][3][2])
     uranus.pos=pos1
+    
     pos1=vector(positions[i][4][0],positions[i][4][1],positions[i][4][2])
     neptune.pos=pos1
-    rate(100)
+    
+    rate(1000)
     
     
 
