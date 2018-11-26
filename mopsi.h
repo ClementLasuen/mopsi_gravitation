@@ -9,9 +9,9 @@ using namespace std;
 using namespace Imagine;
 
 const int nb_planetes =5;
-const double h = 10;
-const int nb_iterations = 10000;
-const double m [nb_planetes] = {1.0, 0.0009548, 0.00029, 0.0000437, 0.0000518};
+const double h = 1;
+const int nb_iterations = 100000;
+const double m [nb_planetes] = {1.00000597682,0.0009548, 0.00029, 0.0000437, 0.0000518};
 const double G =2.959122*0.0001;
 
 // ------------------------------------------- Fonctions pratiques ----------------------------------------
@@ -57,10 +57,9 @@ FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3
 
 FVector<FVector<double,3>,nb_planetes>* pf_euler_symplectique(FVector<FVector<double,3>,nb_planetes> qn, FVector<FVector<double,3>,nb_planetes> pn );
 
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0);
+FVector<FVector<double,3>,nb_planetes>* euler_symplectique(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
 
 // Verlet
 
 void changement_variables(FVector<FVector<double,3>,nb_planetes> &p);
-FVector<FVector<double,3>,nb_planetes>* verlet(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0);
-
+FVector<FVector<double,3>,nb_planetes>* verlet(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);

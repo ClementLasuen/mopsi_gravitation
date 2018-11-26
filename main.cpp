@@ -1,5 +1,6 @@
+
 #include "mopsi.h"
-#include "ecriture.h"
+
 
 
 int main()
@@ -9,15 +10,13 @@ int main()
     // Soleil
     FVector<double,3> q_soleil = {0.0,0.0,0.0};
     FVector<double,3> p_soleil = {0.0,0.0,0.0};
-    for(int i=0;i<3;i++){
-        q_soleil[i]=0.0;
-        p_soleil[i]=0.0;
-    }
+
     // Jupiter
 
     FVector<double,3> q_jupiter = {-3.5024 , -3.8170 , -1.5508};
     FVector<double,3> p_jupiter = {0.0056543 , -0.0041249, -0.0019059};
     p_jupiter = m[1]*p_jupiter;
+
     // Saturne
 
     FVector<double,3> q_saturne = {9.1,-3.0,-1.6};
@@ -34,8 +33,8 @@ int main()
     FVector<double,3> p_neptune = {0.0028893, -0.0017070, -0.0013650};
     p_neptune = m[4]*p_neptune;
 
-    FVector<FVector<double,3>,nb_planetes> p = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
-    FVector<FVector<double,3>,nb_planetes> q = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
+    FVector<FVector<double,3>,nb_planetes> p;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
+    FVector<FVector<double,3>,nb_planetes> q;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
 
     q[0]=q_soleil;
     q[1]=q_jupiter;
@@ -49,7 +48,7 @@ int main()
     p[3]=p_uranus;
     p[4]=p_neptune;
 
-    FVector<FVector<double,3>,nb_planetes>* resu = euler_explicite(q,p);
+    FVector<FVector<double,3>,nb_planetes>* resu = verlet(q,p);
     openWindow(500,500);
     // Je projete sur le plan 0xy pour voir si c'est potable
 
@@ -58,7 +57,6 @@ int main()
         fillCircle(resu[i][1][0]+200,resu[i][1][1]+200,2,RED);
         cout << resu[i][1] << endl;
     }
-    fillCircle(50 ,50,5,RED);
 
     endGraphics();
 
@@ -72,5 +70,5 @@ int main()
     }
     else cout << "pb ouverture" << endl;
 
-	return 0;
+    return 0;
 }
