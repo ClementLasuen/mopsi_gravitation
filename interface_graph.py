@@ -60,7 +60,7 @@ soleil = sphere(pos=pos1,radius =4,texture = 'sun.jpg', make_trail = True, trail
 
 pos1=vector(positions[0][1][0],positions[0][1][1],positions[0][1][2])
 
-jupiter = sphere(pos=pos1,radius =2,texture = 'jupiter.jpg',make_trail = True, trail_type="curve",
+jupiter = sphere(pos=pos1,radius =2,texture = {'file' :'jupiter.jpg', 'turn' : 90},make_trail = True, trail_type="curve",
               interval=10)
 
 pos1=vector(positions[0][2][0],positions[0][2][1],positions[0][2][2])
@@ -77,19 +77,19 @@ neptune = sphere(pos=pos1,radius =2,texture = 'neptune.jpg',make_trail = True, t
 
 for i in range(nb_iterations):
     
-    pos1=vector(positions[i][0][0],positions[i][0][1],positions[i][0][2])
+    pos1=vector(positions[i][0][1],positions[i][0][2],positions[i][0][0])
     soleil.pos=pos1
     
-    pos1=vector(positions[i][1][0],positions[i][1][1],positions[i][1][2])
+    pos1=vector(positions[i][1][1],positions[i][1][2],positions[i][1][0])
     jupiter.pos=pos1
     
-    pos1=vector(positions[i][2][0],positions[i][2][1],positions[i][2][2])
+    pos1=vector(positions[i][2][1],positions[i][2][2],positions[i][2][0])
     saturne.pos=pos1
     
-    pos1=vector(positions[i][3][0],positions[i][3][1],positions[i][3][2])
+    pos1=vector(positions[i][3][1],positions[i][3][2],positions[i][3][0])
     uranus.pos=pos1
     
-    pos1=vector(positions[i][4][0],positions[i][4][1],positions[i][4][2])
+    pos1=vector(positions[i][4][1],positions[i][4][2],positions[i][4][0])
     neptune.pos=pos1
 
     rate(500)
