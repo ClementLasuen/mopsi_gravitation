@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import matplotlib.pyplot as plt
+
 import numpy as np
+import matplotlib.pyplot as plt
+import scipy.integrate as si
+import scipy.optimize as so
+from mpl_toolkits.mplot3d import Axes3D
 
 def get_data(file_path):
     path = "/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/"+file_path
@@ -44,13 +48,18 @@ def plot_H(nb_iterations):
 
 #%% Affichage trajectoires
 
-file_path = "Datas/verlet.txt"
+file_path = "Datas/euler_explicite.txt"
 
 nb_iterations,nb_planetes,positions,vitesses = get_data(file_path)
 
 ax = plt.gca(projection='3d')
 ax.plot([0.],[0.],[0.],'o',label='Soleil')
 ax.plot(positions[:,1,0],positions[:,1,1],positions[:,1,2],label='Jupiter')
+ax.plot(positions[:,2,0],positions[:,2,1],positions[:,2,2],label='Jupiter')
+ax.plot(positions[:,3,0],positions[:,3,1],positions[:,3,2],label='Jupiter')
+ax.plot(positions[:,4,0],positions[:,4,1],positions[:,4,2],label='Jupiter')
+ax.plot(positions[:,5,0],positions[:,5,1],positions[:,5,2],label='Jupiter')
+ax.plot(positions[:,6,0],positions[:,6,1],positions[:,6,2],label='Jupiter')
 plt.legend()
 plt.axis('equal')
 plt.show()

@@ -48,7 +48,7 @@ int main()
     p[3]=p_uranus;
     p[4]=p_neptune;
 
-    FVector<FVector<double,3>,nb_planetes>* resu = verlet(q,p);
+    FVector<FVector<double,3>,nb_planetes>* resu = euler_explicite(q,p);
     openWindow(500,500);
     // Je projete sur le plan 0xy pour voir si c'est potable
 
