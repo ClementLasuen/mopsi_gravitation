@@ -5,6 +5,7 @@
 Ceci est un script temporaire.
 """
 from vpython import *
+
 import numpy as np
 #terre = sphere(pos=vector(0,0,0), radius=10, color=color.blue)
 #lune = sphere()
@@ -54,19 +55,28 @@ def get_data():
 nb_iterations, nb_planetes,positions,vitesse = get_data()
 agrandissement =5
 pos1=vector(positions[0][0][0],positions[0][0][1],positions[0][0][2])
-soleil = sphere(pos=agrandissement*pos1,radius =4,color=color.yellow)
+soleil = sphere(pos=pos1,radius =4,color=color.yellow, make_trail = True, trail_type="curve",
+              interval=10)#, materials = materials.wood)
 
 pos1=vector(positions[0][1][0],positions[0][1][1],positions[0][1][2])
+<<<<<<< HEAD
 jupiter = sphere(pos=agrandissement*pos1,radius =2,color=color.red, make_trail=True)
+=======
+jupiter = sphere(pos=pos1,radius =2,color=color.red,make_trail = True, trail_type="curve",
+              interval=10)
+>>>>>>> 40c506b94b95785a268668486a4bc7d355f6158b
 
 pos1=vector(positions[0][2][0],positions[0][2][1],positions[0][2][2])
-saturne = sphere(pos=agrandissement*pos1,radius =2,color=color.white)
+saturne = sphere(pos=pos1,radius =2,color=color.white,make_trail = True, trail_type="curve",
+              interval=10)
 
 pos1=vector(positions[0][3][0],positions[0][3][1],positions[0][3][2])
-uranus = sphere(pos=agrandissement*pos1,radius =2,color=color.green)
+uranus = sphere(pos=pos1,radius =2,color=color.green,make_trail = True, trail_type="curve",
+              interval=10)
 
 pos1=vector(positions[0][4][0],positions[0][4][1],positions[0][4][2])
-neptune = sphere(pos=agrandissement*pos1,radius =2,color=color.blue)
+neptune = sphere(pos=pos1,radius =2,color=color.blue,make_trail = True, trail_type="curve",
+              interval=10)
 
 for i in range(nb_iterations):
     
@@ -84,10 +94,5 @@ for i in range(nb_iterations):
     
     pos1=vector(positions[i][4][0],positions[i][4][1],positions[i][4][2])
     neptune.pos=pos1
-    
-    rate(1000)
-    
-    
 
-          
-
+    rate(100)
