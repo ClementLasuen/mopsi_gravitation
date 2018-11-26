@@ -59,12 +59,9 @@ soleil = sphere(pos=pos1,radius =4,color=color.yellow, make_trail = True, trail_
               interval=10)#, materials = materials.wood)
 
 pos1=vector(positions[0][1][0],positions[0][1][1],positions[0][1][2])
-<<<<<<< HEAD
-jupiter = sphere(pos=agrandissement*pos1,radius =2,color=color.red, make_trail=True)
-=======
+
 jupiter = sphere(pos=pos1,radius =2,color=color.red,make_trail = True, trail_type="curve",
               interval=10)
->>>>>>> 40c506b94b95785a268668486a4bc7d355f6158b
 
 pos1=vector(positions[0][2][0],positions[0][2][1],positions[0][2][2])
 saturne = sphere(pos=pos1,radius =2,color=color.white,make_trail = True, trail_type="curve",
