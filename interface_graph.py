@@ -55,25 +55,32 @@ def get_data():
 nb_iterations, nb_planetes,positions,vitesse = get_data()
 agrandissement =5
 pos1=vector(positions[0][0][0],positions[0][0][1],positions[0][0][2])
-soleil = sphere(pos=pos1,radius =4,texture = 'sun.jpg', make_trail = True, trail_type="curve",
-              interval=10)#, materials = materials.wood)
+soleil = sphere(pos=pos1,radius =4,texture = 'sun.jpg',
+              interval=10)
 
 pos1=vector(positions[0][1][0],positions[0][1][1],positions[0][1][2])
 
-jupiter = sphere(pos=pos1,radius =2,texture = {'file' :'jupiter.jpg', 'turn' : 90},make_trail = True, trail_type="curve",
+jupiter = sphere(pos=pos1,radius =2,texture = 'jupiter.jpg',
               interval=10)
 
 pos1=vector(positions[0][2][0],positions[0][2][1],positions[0][2][2])
-saturne = sphere(pos=pos1,radius =2,texture = 'saturn.png', make_trail = True, trail_type="curve",
+saturne = sphere(pos=pos1,radius =2,texture = 'saturn.png',
               interval=10)
 
 pos1=vector(positions[0][3][0],positions[0][3][1],positions[0][3][2])
-uranus = sphere(pos=pos1,radius =2,texture = 'uranus.jpg',make_trail = True, trail_type="curve",
+uranus = sphere(pos=pos1,radius =2,texture = 'uranus.jpg',
               interval=10)
 
 pos1=vector(positions[0][4][0],positions[0][4][1],positions[0][4][2])
-neptune = sphere(pos=pos1,radius =2,texture = 'neptune.jpg',make_trail = True, trail_type="curve",
+neptune = sphere(pos=pos1,radius =2,texture = 'neptune.jpg',
               interval=10)
+
+jupiter.trail = curve(color = vector(1,0.8,0.65))
+saturne.trail = curve(color = vector(1,0.8,0.5))
+uranus.trail = curve(color = color.cyan)
+neptune.trail = curve(color = color.blue)
+
+scene.autoscale = False
 
 for i in range(nb_iterations):
     
@@ -82,14 +89,18 @@ for i in range(nb_iterations):
     
     pos1=vector(positions[i][1][1],positions[i][1][2],positions[i][1][0])
     jupiter.pos=pos1
+    jupiter.trail.append(pos=jupiter.pos)
     
     pos1=vector(positions[i][2][1],positions[i][2][2],positions[i][2][0])
     saturne.pos=pos1
+    saturne.trail.append(pos=saturne.pos)
     
     pos1=vector(positions[i][3][1],positions[i][3][2],positions[i][3][0])
     uranus.pos=pos1
+    uranus.trail.append(pos=uranus.pos)
     
     pos1=vector(positions[i][4][1],positions[i][4][2],positions[i][4][0])
     neptune.pos=pos1
+    neptune.trail.append(pos=neptune.pos)
 
     rate(500)
