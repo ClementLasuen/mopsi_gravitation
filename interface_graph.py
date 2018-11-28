@@ -51,8 +51,8 @@ def get_data():
                 vitesses[i,j,2] = float(coordonnees[6*j+5])
         return(nb_iterations,nb_planetes,positions,vitesses)
     
-
-nb_iterations, nb_planetes,positions,vitesse = get_data()
+    
+nb_iterations, nb_planetes,positions,vitesses = get_data()
 agrandissement =5
 pos1=vector(positions[0][0][0],positions[0][0][1],positions[0][0][2])
 soleil = sphere(pos=pos1,radius =4,texture = 'sun.jpg', emissive =True,
@@ -85,7 +85,9 @@ lamp = local_light(pos=vector(0,0,0), color=color.white)
 
 scene.autoscale = False
 
-for i in range(0,nb_iterations,50):
+rotation = vector(-0.5,1,0)
+
+for i in range(0,nb_iterations,20):
     
     pos1=vector(positions[i][0][1],positions[i][0][2],positions[i][0][0])
     soleil.pos=pos1
@@ -93,17 +95,21 @@ for i in range(0,nb_iterations,50):
     pos1=vector(positions[i][1][1],positions[i][1][2],positions[i][1][0])
     jupiter.pos=pos1
     jupiter.trail.append(pos=jupiter.pos)
+    jupiter.rotate(angle=0.2, axis=rotation)
     
     pos1=vector(positions[i][2][1],positions[i][2][2],positions[i][2][0])
     saturne.pos=pos1
     saturne.trail.append(pos=saturne.pos)
+    saturne.rotate(angle=0.2, axis=rotation)
     
     pos1=vector(positions[i][3][1],positions[i][3][2],positions[i][3][0])
     uranus.pos=pos1
     uranus.trail.append(pos=uranus.pos)
+    saturne.rotate(angle=0.2, axis=rotation)
     
     pos1=vector(positions[i][4][1],positions[i][4][2],positions[i][4][0])
     neptune.pos=pos1
     neptune.trail.append(pos=neptune.pos)
+    neptune.rotate(angle=0.2, axis=rotation)
 
-    rate(30)
+    rate(20)
