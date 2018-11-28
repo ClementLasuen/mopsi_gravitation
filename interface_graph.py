@@ -55,7 +55,7 @@ def get_data():
 nb_iterations, nb_planetes,positions,vitesse = get_data()
 agrandissement =5
 pos1=vector(positions[0][0][0],positions[0][0][1],positions[0][0][2])
-soleil = sphere(pos=pos1,radius =4,texture = 'sun.jpg',
+soleil = sphere(pos=pos1,radius =4,texture = 'sun.jpg', emissive =True,
               interval=10)
 
 pos1=vector(positions[0][1][0],positions[0][1][1],positions[0][1][2])
@@ -79,6 +79,9 @@ jupiter.trail = curve(color = vector(1,0.8,0.65))
 saturne.trail = curve(color = vector(1,0.8,0.5))
 uranus.trail = curve(color = color.cyan)
 neptune.trail = curve(color = color.blue)
+
+scene.lights = []
+lamp = local_light(pos=vector(0,0,0), color=color.white)
 
 scene.autoscale = False
 
