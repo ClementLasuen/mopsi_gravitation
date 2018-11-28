@@ -85,7 +85,7 @@ lamp = local_light(pos=vector(0,0,0), color=color.white)
 
 scene.autoscale = False
 
-for i in range(nb_iterations):
+for i in range(0,nb_iterations,50):
     
     pos1=vector(positions[i][0][1],positions[i][0][2],positions[i][0][0])
     soleil.pos=pos1
@@ -106,4 +106,4 @@ for i in range(nb_iterations):
     neptune.pos=pos1
     neptune.trail.append(pos=neptune.pos)
 
-    rate(500)
+    rate(30)
