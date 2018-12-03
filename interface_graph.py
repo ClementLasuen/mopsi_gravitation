@@ -5,14 +5,15 @@
 Ceci est un script temporaire.
 """
 from vpython import *
-
+dir(vpython)
 import numpy as np
 
 
 def get_data():
     # prend le fichier renvoyé par le code C++ pour une trajectoire
     # renvoie le nombre d'iteration, le nombre de planetes, la liste des position de toutes les planetes a chaque temps, la liste des vitesses de toutes les planetes a chaque temps
-    with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/euler_explicite.txt") as datas:
+    #with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/euler_explicite.txt") as datas:
+    with open("verlet.txt") as datas:
         lines = list(map(str.rstrip, datas.readlines()))
         metadatas = lines[0].split(' ')
         nb_iterations = int(metadatas[0])
@@ -37,7 +38,7 @@ def get_data():
     
 scene.title = "Enhanced 3D of surfaces using bump maps"
 scene.caption = "Drag the single light with the left button, rotate with the right button."
-scene.background : color.gray
+
 decor = sphere(pos=vector(0,0,0),radius = 1000,texture='ciel.jpg')
 
 autoscale = False
@@ -71,6 +72,8 @@ saturne.trail = curve(color = vector(1,0.8,0.5))
 uranus.trail = curve(color = color.cyan)
 neptune.trail = curve(color = color.blue)
 
+precious = ring(pos=saturne.pos, axis = saturne.pos,radius = 3, thickness=0.1)
+
 scene.lights = []
 lamp = local_light(pos=vector(0,0,0), color=color.white)
 
@@ -92,6 +95,9 @@ for i in range(0,nb_iterations,20):
     saturne.pos=pos1
     saturne.trail.append(pos=saturne.pos)
     saturne.rotate(angle=0.2, axis=rotation)
+    
+    
+    precious.pos = saturne.pos
     
     pos1=vector(positions[i][3][1],positions[i][3][2],positions[i][3][0])
     uranus.pos=pos1
