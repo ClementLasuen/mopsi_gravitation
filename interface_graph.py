@@ -7,23 +7,6 @@ Ceci est un script temporaire.
 from vpython import *
 
 import numpy as np
-#terre = sphere(pos=vector(0,0,0), radius=10, color=color.blue)
-#lune = sphere()
-#vaisseau = sphere(pos=vector(0,30,0), radius=3, color=color.red)
-#
-#angle = 0.0
-#distance = 40.0
-#i=0
-#while i<1000:
-#   pos1=vector(distance * cos(angle),distance * sin(angle),0) 
-#   lune.pos=pos1
-#   angle = angle + pi/6
-#   rate(10)
-  
-  #lune.x = distance * cos(angle)
-  #lune.y = distance * sin(angle)
-  #vaisseau.x = vaisseau.x + random() - 0.5
-  #vaisseau.y = vaisseau.y + random() - 0.5
 
 
 def get_data():
@@ -52,8 +35,16 @@ def get_data():
         return(nb_iterations,nb_planetes,positions,vitesses)
     
     
+scene.title = "Enhanced 3D of surfaces using bump maps"
+scene.caption = "Drag the single light with the left button, rotate with the right button."
+scene.background : color.gray
+decor = sphere(pos=vector(0,0,0),radius = 1000,texture='ciel.jpg')
+
+autoscale = False
+scene.camera.pos = vector(100,0,0)
+
 nb_iterations, nb_planetes,positions,vitesses = get_data()
-agrandissement =5
+
 pos1=vector(positions[0][0][0],positions[0][0][1],positions[0][0][2])
 soleil = sphere(pos=pos1,radius =4,texture = 'sun.jpg', emissive =True,
               interval=10)
