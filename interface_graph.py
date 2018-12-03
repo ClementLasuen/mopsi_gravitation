@@ -8,12 +8,13 @@ from vpython import *
 #dir(vpython)
 import numpy as np
 
+pause_var = False
 
 def get_data():
     # prend le fichier renvoyé par le code C++ pour une trajectoire
     # renvoie le nombre d'iteration, le nombre de planetes, la liste des position de toutes les planetes a chaque temps, la liste des vitesses de toutes les planetes a chaque temps
-    #with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/euler_explicite.txt") as datas:
-    with open("verlet.txt") as datas:
+    with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/euler_explicite.txt") as datas:
+    #with open("verlet.txt") as datas:
         lines = list(map(str.rstrip, datas.readlines()))
         metadatas = lines[0].split(' ')
         nb_iterations = int(metadatas[0])
@@ -38,9 +39,9 @@ def get_data():
 
 
 scene.title = "Enhanced 3D of surfaces using bump maps"
-scene.caption = "Drag the single light with the left button, rotate with the right button."
+scene.caption = "Drag the single light with the left button, rotate with the right button. \n\n"
 
-decor = sphere(pos=vector(0,0,0),radius = 75,texture='ciel.jpg')
+scene.camera.pos = vector(0,0,0)
 
 
 nb_iterations, nb_planetes,positions,vitesses = get_data()
@@ -66,22 +67,38 @@ pos1=vector(positions[0][4][0],positions[0][4][1],positions[0][4][2])
 neptune = sphere(pos=pos1,radius =2,texture = 'neptune.jpg',
               interval=10)
 
-jupiter.trail = curve(color = vector(1,0.8,0.65))
-saturne.trail = curve(color = vector(1,0.8,0.5))
-uranus.trail = curve(color = color.cyan)
-neptune.trail = curve(color = color.blue)
+jupiter.trail = curve(color = vector(1,0.8,0.65), radius=0.05)
+saturne.trail = curve(color = vector(1,0.8,0.5), radius=0.05)
+uranus.trail = curve(color = color.cyan, radius=0.05)
+neptune.trail = curve(color = color.blue, radius=0.05)
 
 precious = ring(pos=saturne.pos, axis = saturne.pos,radius = 3, thickness=0.1)
 
 
 lamp = local_light(pos=vector(0,0,0), color=color.white)
+autoscale=False
+decor = sphere(pos=vector(0,0,0),radius = 80,texture='ciel.jpg')
 
 rotation = vector(-0.5,1,0)
 
-scene = display()
-scene2 = display()
 
-for i in range(0,nb_iterations,20):
+
+#boutton de pause / play
+def pause():
+    global pause_var
+    pause_var = not pause_var
+button( bind=pause, text='Play/Pause' )
+scene.append_to_caption('')
+
+i = 0
+pas_affichage = 10
+
+while i<nb_iterations:
+    
+    rate(20)
+    
+    if pause_var:
+        continue
     
     pos1=vector(positions[i][0][1],positions[i][0][2],positions[i][0][0])
     soleil.pos=pos1
@@ -108,5 +125,6 @@ for i in range(0,nb_iterations,20):
     neptune.pos=pos1
     neptune.trail.append(pos=neptune.pos)
     neptune.rotate(angle=0.2, axis=rotation)
+    
+    i+=pas_affichage
 
-    rate(20)
