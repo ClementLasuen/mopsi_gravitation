@@ -39,8 +39,8 @@ def get_data():
     
 scene.title = "Enhanced 3D of surfaces using bump maps"
 scene.caption = "Drag the single light with the left button, rotate with the right button. \n\n"
+scene.fullscreen = 1
 
-autoscale = False
 scene.camera.pos = vector(0,0,0)
 
 nb_iterations, nb_planetes,positions,vitesses = get_data()
@@ -83,6 +83,9 @@ decor = sphere(pos=vector(0,0,0),radius = 80,texture='ciel.jpg')
 rotation = vector(-0.5,1,0)
 
 #boutton de pause / play
+
+c = controls 
+
 def pause():
     global pause_var
     pause_var = not pause_var
@@ -92,9 +95,13 @@ scene.append_to_caption('')
 i = 0
 pas_affichage = 10
 
+def rate_modif():
+    value+=1
+s = slider(bind = rate_modif,min=1, max=150, value=20)
+
 while i<nb_iterations:
     
-    rate(20)
+    rate(s.value)
     
     if pause_var:
         continue
