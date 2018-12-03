@@ -8,6 +8,7 @@ from vpython import *
 
 import numpy as np
 
+pause_var = False
 
 def get_data():
     # prend le fichier renvoyé par le code C++ pour une trajectoire
@@ -37,11 +38,10 @@ def get_data():
     
 scene.title = "Enhanced 3D of surfaces using bump maps"
 scene.caption = "Drag the single light with the left button, rotate with the right button."
-scene.background : color.gray
-decor = sphere(pos=vector(0,0,0),radius = 1000,texture='ciel.jpg')
+#decor = sphere(pos=vector(0,0,0),radius = 1000,texture='ciel.jpg')
 
 autoscale = False
-scene.camera.pos = vector(100,0,0)
+scene.camera.pos = vector(0,0,0)
 
 nb_iterations, nb_planetes,positions,vitesses = get_data()
 
@@ -66,10 +66,10 @@ pos1=vector(positions[0][4][0],positions[0][4][1],positions[0][4][2])
 neptune = sphere(pos=pos1,radius =2,texture = 'neptune.jpg',
               interval=10)
 
-jupiter.trail = curve(color = vector(1,0.8,0.65))
-saturne.trail = curve(color = vector(1,0.8,0.5))
-uranus.trail = curve(color = color.cyan)
-neptune.trail = curve(color = color.blue)
+jupiter.trail = curve(color = vector(1,0.8,0.65), radius=0.05)
+saturne.trail = curve(color = vector(1,0.8,0.5), radius=0.05)
+uranus.trail = curve(color = color.cyan, radius=0.05)
+neptune.trail = curve(color = color.blue, radius=0.05)
 
 scene.lights = []
 lamp = local_light(pos=vector(0,0,0), color=color.white)
@@ -78,7 +78,28 @@ scene.autoscale = False
 
 rotation = vector(-0.5,1,0)
 
-for i in range(0,nb_iterations,20):
+#boutton de pause / play
+def pause():
+    global pause_var
+    pause_var = True
+button( bind=pause, text='Pause' )
+scene.append_to_caption('\n\n')
+
+def play():
+    global pause_var
+    pause_var = False
+button( bind=play, text='Play' )
+scene.append_to_caption('\n\n')
+
+i = 0
+pas_affichage = 10
+
+while i<nb_iterations:
+    
+    rate(20)
+    
+    if pause_var:
+        continue
     
     pos1=vector(positions[i][0][1],positions[i][0][2],positions[i][0][0])
     soleil.pos=pos1
@@ -102,5 +123,6 @@ for i in range(0,nb_iterations,20):
     neptune.pos=pos1
     neptune.trail.append(pos=neptune.pos)
     neptune.rotate(angle=0.2, axis=rotation)
+    
+    i+=pas_affichage
 
-    rate(20)
