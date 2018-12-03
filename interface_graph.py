@@ -13,8 +13,8 @@ pause_var = False
 def get_data():
     # prend le fichier renvoyé par le code C++ pour une trajectoire
     # renvoie le nombre d'iteration, le nombre de planetes, la liste des position de toutes les planetes a chaque temps, la liste des vitesses de toutes les planetes a chaque temps
-    #with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/euler_explicite.txt") as datas:
-    with open("verlet.txt") as datas:
+    with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/euler_explicite.txt") as datas:
+    #with open("verlet.txt") as datas:
         lines = list(map(str.rstrip, datas.readlines()))
         metadatas = lines[0].split(' ')
         nb_iterations = int(metadatas[0])
@@ -38,9 +38,7 @@ def get_data():
     
     
 scene.title = "Enhanced 3D of surfaces using bump maps"
-scene.caption = "Drag the single light with the left button, rotate with the right button."
-
-#decor = sphere(pos=vector(0,0,0),radius = 1000,texture='ciel.jpg')
+scene.caption = "Drag the single light with the left button, rotate with the right button. \n\n"
 
 autoscale = False
 scene.camera.pos = vector(0,0,0)
@@ -80,20 +78,16 @@ lamp = local_light(pos=vector(0,0,0), color=color.white)
 
 scene.autoscale = False
 
+decor = sphere(pos=vector(0,0,0),radius = 80,texture='ciel.jpg')
+
 rotation = vector(-0.5,1,0)
 
 #boutton de pause / play
 def pause():
     global pause_var
-    pause_var = True
-button( bind=pause, text='Pause' )
-scene.append_to_caption('\n\n')
-
-def play():
-    global pause_var
-    pause_var = False
-button( bind=play, text='Play' )
-scene.append_to_caption('\n\n')
+    pause_var = not pause_var
+button( bind=pause, text='Play/Pause' )
+scene.append_to_caption('')
 
 i = 0
 pas_affichage = 10
