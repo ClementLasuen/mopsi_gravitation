@@ -5,7 +5,7 @@
 Ceci est un script temporaire.
 """
 from vpython import *
-dir(vpython)
+#dir(vpython)
 import numpy as np
 
 
@@ -35,14 +35,13 @@ def get_data():
                 vitesses[i,j,2] = float(coordonnees[6*j+5])
         return(nb_iterations,nb_planetes,positions,vitesses)
     
-    
+
+
 scene.title = "Enhanced 3D of surfaces using bump maps"
 scene.caption = "Drag the single light with the left button, rotate with the right button."
 
-decor = sphere(pos=vector(0,0,0),radius = 1000,texture='ciel.jpg')
+decor = sphere(pos=vector(0,0,0),radius = 75,texture='ciel.jpg')
 
-autoscale = False
-scene.camera.pos = vector(100,0,0)
 
 nb_iterations, nb_planetes,positions,vitesses = get_data()
 
@@ -74,12 +73,13 @@ neptune.trail = curve(color = color.blue)
 
 precious = ring(pos=saturne.pos, axis = saturne.pos,radius = 3, thickness=0.1)
 
-scene.lights = []
+
 lamp = local_light(pos=vector(0,0,0), color=color.white)
 
-scene.autoscale = False
-
 rotation = vector(-0.5,1,0)
+
+scene = display()
+scene2 = display()
 
 for i in range(0,nb_iterations,20):
     
