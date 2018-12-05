@@ -25,7 +25,10 @@ FVector<FVector<double,3>,nb_planetes> interaction(FVector<FVector<double,3>,nb_
 // ----------------------------------------- Hamiltonien----------------------------------------------
 
 double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p);
+double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p);
+double H_modifie_V(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p);
 
+FVector<FVector<double, 3*nb_planetes>,3*nb_planetes >  Hessienne(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p);
 //---------------------------------- Methodes d'integration -------------------------------------------
 
 // Renvoie une "distance" entre les positions q0 et q1
