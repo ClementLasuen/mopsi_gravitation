@@ -56,7 +56,18 @@ double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<d
 
     // Calcul de la Hessienne
 
+    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > hess = Hessienne(q,p);
+    for(int i=0;i<nb_planetes;i++){
+        for(int j=0;j<nb_planetes;j++){
+            for(int k=0;k<3;k++){
+                for(int l=0;l<3;l++){
+                    resu +=  p[j][k]*hess[i*3 + k][j*3+l]*p[i][l]  /12;
+                }
+            }
 
+        }
+    }
+    return resu;
 
 
 }
