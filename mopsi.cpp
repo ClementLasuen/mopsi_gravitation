@@ -33,6 +33,73 @@ double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_
     }
     return resu;
 }
+// Hamiltonien modifié pour euler symplectique
+
+double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p){
+    double resu = H(q,p);
+    for(int i=0;i<nb_planetes;i++){
+        for(int j=0;j<3;j++) resu -= p[i][j]* interaction(q)[i][j]/2*m[i];
+    }
+    return resu;
+}
+
+// Hamiltonien modifié pour Verlet
+// Attention à faire le changement de variable ??? JE NE PENSE PAs, voir article verlet
+
+double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<double, 3>, nb_planetes> p){
+    double resu = H(q,p);
+    for(int i=0;i<nb_planetes;i++){
+        for(int j=0;j<3;j++){
+            resu += interaction(q)[i][j]*interaction(q)[i][j]/24;
+        }
+    }
+
+    // Calcul de la Hessienne
+
+
+
+
+}
+
+
+FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<double, 3>, nb_planetes> p){
+
+    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > result;
+    // coeff yi xi , i pour une meme planete
+
+    double dxi_dyi=0;
+    double dxi_dyj=0;
+
+
+    for(int i=0;i<nb_planetes;i++){
+        for(int j=0;j<nb_planetes;j++){
+            if(j==i){
+
+                for(int coord =0;coord<3;coord++){
+                    for(int coord2=0; coord2<3;coord2++){
+                        dxi_dyi=0;
+                        for(int k=0;k<nb_planetes;k++){
+                            if(k!=i) dxi_dyi += -G*m[i]*m[k]*(q[k][coord] -q[k][coord])*(q[k][coord2]-q[k][coord2])/
+                                    (norme(q[i] - q[k])*norme(q[i] - q[k])*norme(q[i] - q[k])*norme(q[i] - q[k])*norme(q[i] - q[k]));
+                        }
+                        result[i*3+coord][j*3 +coord2]= dxi_dyi;
+                    }
+                }
+            }
+            else{
+                for(int coord =0;coord<3;coord++){
+                    for(int coord2=0; coord2<3;coord2++){
+
+                        dxi_dyj = - G*m[i]*m[j]*(q[i][coord] -q[j][coord])*(q[i][coord2]-q[j][coord2])/
+                                (norme(q[i] - q[j])*norme(q[i] - q[j])*norme(q[i] - q[j])*norme(q[i] - q[j])*norme(q[i] - q[j]));
+                        result[i*3+coord][j*3 +coord2]= dxi_dyj;
+                    }
+                }
+            }
+        }
+    }
+    return result;
+}
 
 // ------------------------------------------Methodes d'integration------------------------------
 
