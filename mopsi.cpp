@@ -14,7 +14,7 @@ FVector<FVector<double, 3>, nb_planetes> interaction(FVector<FVector<double, 3>,
         for(int j = 0; j<nb_planetes;j++){
             if(j!=i){
                 r = norme(q[i] - q[j])*norme(q[i] - q[j])*norme(q[i] - q[j]);
-                resu[i] += - (q[i] - q[j])*G*m[i]* m[j] *1./r;
+                resu[i] += - (q[i] - q[j])*G*m[i]* m[j]/r;
             }
         }
     }
@@ -37,8 +37,13 @@ double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_
 
 double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p){
     double resu = H(q,p);
+    FVector<FVector<double, 3>, nb_planetes> delta_V = interaction(q);
     for(int i=0;i<nb_planetes;i++){
-        for(int j=0;j<3;j++) resu -= p[i][j]* interaction(q)[i][j]/2*m[i];
+        for(int j=0;j<3;j++) {
+            //cout << h*p[i][j]* delta_V[i][j]/(2*m[i])  << endl;
+            //cout << p[i][j] << endl;
+            resu +=  -h*p[i][j]* delta_V[i][j]/(2*m[i]);
+        }
     }
     return resu;
 }
@@ -48,9 +53,10 @@ double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<do
 
 double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<double, 3>, nb_planetes> p){
     double resu = H(q,p);
+    FVector<FVector<double, 3>, nb_planetes> delta_V = interaction(q);
     for(int i=0;i<nb_planetes;i++){
         for(int j=0;j<3;j++){
-            resu += interaction(q)[i][j]*interaction(q)[i][j]/24;
+            resu += h*h*delta_V[i][j]*delta_V[i][j]/24;
         }
     }
 
@@ -64,7 +70,6 @@ double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<d
                     resu +=  p[j][k]*hess[i*3 + k][j*3+l]*p[i][l]  /12;
                 }
             }
-
         }
     }
     return resu;
@@ -304,6 +309,25 @@ FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(FVector<FVector<dou
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
     }
 }
+
+//Euler smplectique inverse
+
+FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0){
+    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
+    resu[0]=q0;
+    resu[nb_iterations]=p0;
+    //FVector<FVector<double,3>,nb_planetes> delta_V;
+    for(int i=1;i<nb_iterations;i++){
+
+        for(int j=0; j<nb_planetes;j++) resu[i][j] = resu[i-1][j] + h*resu[i-1+nb_iterations][j]/m[j];
+        FVector<FVector<double,3>,nb_planetes> delta_V = interaction(resu[i]);
+        for(int j=0; j<nb_planetes;j++) resu[i+nb_iterations][j] = resu[i-1+nb_iterations][j] + h*delta_V[j];
+    }
+    return resu;
+}
+
+
+
 
 // Verlet
 
