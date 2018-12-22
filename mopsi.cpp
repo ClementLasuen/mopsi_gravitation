@@ -33,7 +33,7 @@ double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_
     }
     return resu;
 }
-// Hamiltonien modifié pour euler symplectique (implicite sur p) / il faut rajouter H
+// Hamiltonien modifié pour euler symplectique (implicite sur p) / il s'agit de H3 (voir article)
 
 double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p){
     double resu = 0;
@@ -48,8 +48,8 @@ double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<do
     return resu;
 }
 
-// Hamiltonien modifié pour Verlet
-// Attention à faire le changement de variable ??? JE NE PENSE PAs, voir article verlet
+// Hamiltonien modifié pour Verlet / il s'agit de H3 (voir article)
+// Attention à faire le changement de variable ??? JE NE PENSE PAs, voir article verlet --> oui il faut repasser à p et non à p/m
 
 double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<double, 3>, nb_planetes> p){
     double resu = 0;
@@ -352,8 +352,8 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_
     FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [3*nb_iterations];
 
     // resu[i] donne les positions de toutes les planètes à l'iteration i;
-    // resu[i + nb_iterations] donne les quantites de mouvement
-    // resu[i + nb_iterations] donne p_n+1/2
+    // resu[i + nb_iterations] donne les quantités de mouvement
+    // resu[i + nb_iterations] donne (p_n+1/2)/m
 
     string file_name = string("../mopsi_gravitation/Datas/verlet.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
@@ -397,9 +397,13 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_
             }
             if(ecriture){
                 for(int j=0;j<nb_planetes;j++)
-                    fichier << resu[i][j][0] << " " << resu[i][j][1] << " " << resu[i][j][2] << " " << resu[nb_iterations+i][j][0]/m[j] << " " << resu[nb_iterations+i][j][1]/m[j] << " " << resu[nb_iterations+i][j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
+                    fichier << resu[i][j][0] << " " << resu[i][j][1] << " " << resu[i][j][2] << " " << resu[nb_iterations+i][j][0] << " " << resu[nb_iterations+i][j][1] << " " << resu[nb_iterations+i][j][2]<< " "; // On ecrit les positions puis vitesses d'une planete
             fichier << endl;
             }
+        }
+        for (int i=0;i<nb_iterations-1;i++){
+            for (int j=0;j<nb_planetes;j++)
+                resu[nb_iterations+i][j]*=m[j];
         }
         return resu;
     }

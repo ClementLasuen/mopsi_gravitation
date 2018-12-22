@@ -68,7 +68,8 @@ int main()
         for(int i =0; i<nb_iterations;i++){
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
-            valeur_H <<  H(resu[i],resu[i+nb_iterations]) + h*h*H_modifie_V(resu[i],resu[i+nb_iterations])  << endl;
+            double hamiltonien = /*H(resu[i],resu[i+nb_iterations]) +*/ h*h*H_modifie_V(resu[i],resu[i+nb_iterations]);
+            valeur_H <<  hamiltonien  << endl;
         }
     }
     else cout << "pb ouverture" << endl;
