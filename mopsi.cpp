@@ -33,10 +33,10 @@ double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_
     }
     return resu;
 }
-// Hamiltonien modifié pour euler symplectique (implicite sur p)
+// Hamiltonien modifié pour euler symplectique (implicite sur p) / il faut rajouter H
 
 double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p){
-    double resu = H(q,p);
+    double resu = 0;
     FVector<FVector<double, 3>, nb_planetes> delta_V = interaction(q);
     for(int i=0;i<nb_planetes;i++){
         for(int j=0;j<3;j++) {
@@ -52,7 +52,7 @@ double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<do
 // Attention à faire le changement de variable ??? JE NE PENSE PAs, voir article verlet
 
 double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<double, 3>, nb_planetes> p){
-    double resu = H(q,p);
+    double resu = 0;
     FVector<FVector<double, 3>, nb_planetes> delta_V = interaction(q);
     for(int i=0;i<nb_planetes;i++){
         for(int j=0;j<3;j++){
