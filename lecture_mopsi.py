@@ -36,19 +36,20 @@ def get_data(file_path):
 
 def plot_H(nb_iterations):
     resu=[]
-    with open("Datas/test_h.txt") as f:
+    with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/test_h_modif_V.txt") as f:
         for i in range(nb_iterations):
             texte = f.readline()
             resu.append(float(texte))
     print(len(resu))
     X=[i for i in range(nb_iterations)]
+    plt.figure()
     plt.plot(X,resu)
     plt.show()
     
 
 #%% Affichage trajectoires
 
-file_path = "Datas/euler_explicite.txt"
+file_path = "Datas/verlet.txt"
 
 nb_iterations,nb_planetes,positions,vitesses = get_data(file_path)
 
@@ -58,8 +59,10 @@ ax.plot(positions[:,1,0],positions[:,1,1],positions[:,1,2],label='Jupiter')
 ax.plot(positions[:,2,0],positions[:,2,1],positions[:,2,2],label='Jupiter')
 ax.plot(positions[:,3,0],positions[:,3,1],positions[:,3,2],label='Jupiter')
 ax.plot(positions[:,4,0],positions[:,4,1],positions[:,4,2],label='Jupiter')
-ax.plot(positions[:,5,0],positions[:,5,1],positions[:,5,2],label='Jupiter')
-ax.plot(positions[:,6,0],positions[:,6,1],positions[:,6,2],label='Jupiter')
+#ax.plot(positions[:,5,0],positions[:,5,1],positions[:,5,2],label='Jupiter')
+#ax.plot(positions[:,6,0],positions[:,6,1],positions[:,6,2],label='Jupiter')
 plt.legend()
 plt.axis('equal')
 plt.show()
+
+plot_H(nb_iterations)

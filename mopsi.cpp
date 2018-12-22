@@ -78,6 +78,8 @@ double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<d
 }
 
 
+// Calcul la hessienne du potentiel selon q
+
 FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<double, 3>, nb_planetes> p){
 
     FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > result;
@@ -91,23 +93,26 @@ FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne(FVector<FVector
         for(int j=0;j<nb_planetes;j++){
             if(j==i){
 
-                for(int coord =0;coord<3;coord++){
-                    for(int coord2=0; coord2<3;coord2++){
+                for(int coord =0; coord<3; coord++){
+                    for(int coord2=0; coord2<3; coord2++){
                         dxi_dyi=0;
                         for(int k=0;k<nb_planetes;k++){
-                            if(k!=i) dxi_dyi += -G*m[i]*m[k]*(q[k][coord] -q[k][coord])*(q[k][coord2]-q[k][coord2])/
-                                    (norme(q[i] - q[k])*norme(q[i] - q[k])*norme(q[i] - q[k])*norme(q[i] - q[k])*norme(q[i] - q[k]));
+                            if(k!=i){
+                                dxi_dyi += G*m[i]*m[k]*(q[i][coord] -q[k][coord])*(q[i][coord2]-q[k][coord2])/pow(norme(q[i] - q[k]),5.);
+                                if (coord==coord2)
+                                    dxi_dyi -= G*m[i]*m[k]/pow(norme(q[i] - q[k]),3.);
+                            }
                         }
-                        result[i*3+coord][j*3 +coord2]= dxi_dyi;
+                        result[i*3+coord][j*3 +coord2] = dxi_dyi;
                     }
                 }
             }
             else{
                 for(int coord =0;coord<3;coord++){
                     for(int coord2=0; coord2<3;coord2++){
-
-                        dxi_dyj = - G*m[i]*m[j]*(q[i][coord] -q[j][coord])*(q[i][coord2]-q[j][coord2])/
-                                (norme(q[i] - q[j])*norme(q[i] - q[j])*norme(q[i] - q[j])*norme(q[i] - q[j])*norme(q[i] - q[j]));
+                        dxi_dyj = - G*m[i]*m[j]*(q[i][coord]-q[j][coord])*(q[i][coord2]-q[j][coord2])/pow(norme(q[i] - q[j]),5.);
+                        if (coord==coord2)
+                            dxi_dyj += G*m[i]*m[j]/pow(norme(q[i] - q[j]),3.);
                         result[i*3+coord][j*3 +coord2]= dxi_dyj;
                     }
                 }
@@ -136,7 +141,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
-            cout <<"OK"<<endl;
+            cout <<"ecriture"<<endl;
             fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
             for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
                 fichier << m[j]<<" ";
@@ -214,7 +219,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
-            cout <<"OK"<<endl;
+            cout <<"ecriture"<<endl;
             fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
             for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
                 fichier << m[j]<<" ";
@@ -279,7 +284,7 @@ FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(FVector<FVector<dou
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
-            cout <<"OK"<<endl;
+            cout <<"ecriture"<<endl;
             fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
             for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
                 fichier << m[j]<<" ";
@@ -349,7 +354,7 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
-            cout <<"OK"<<endl;
+            cout <<"ecriture"<<endl;
             fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
             for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
                 fichier << m[j]<<" ";

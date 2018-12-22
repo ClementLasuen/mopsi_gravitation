@@ -48,24 +48,24 @@ int main()
     p[3]=p_uranus;
     p[4]=p_neptune;
 
-    FVector<FVector<double,3>,nb_planetes>* resu = euler_explicite(q,p);
+    FVector<FVector<double,3>,nb_planetes>* resu = verlet(q,p);
+    /*
     openWindow(500,500);
     // Je projete sur le plan 0xy pour voir si c'est potable
 
     for(int i =0; i<nb_iterations;i++){
         fillCircle(resu[i][0][0]+200,resu[i][0][1]+200,2,YELLOW);
         fillCircle(resu[i][1][0]+200,resu[i][1][1]+200,2,RED);
-        cout << resu[i][1] << endl;
     }
 
     endGraphics();
-
+    */
     // ------------ ecriture de H -----------
 
-    ofstream valeur_H("../mopsi_gravitation/Datas/test_h.txt");
+    ofstream valeur_H("../mopsi_gravitation/Datas/test_h_modif_V.txt");
     if(valeur_H){
         for(int i =0; i<nb_iterations;i++){
-            valeur_H << H(resu[i],resu[i+nb_iterations]) << endl;
+            valeur_H << H_modifie_V(resu[i],resu[i+nb_iterations]) << endl;
         }
     }
     else cout << "pb ouverture" << endl;
