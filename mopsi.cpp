@@ -348,6 +348,13 @@ void changement_variables(FVector<FVector<double, 3>, nb_planetes> &p){
     }
 }
 
+void changement_variables_inverse(FVector<FVector<double, 3>, nb_planetes> &p){
+    FVector<FVector<double,3>,nb_planetes> p_ = p;
+    for(int i=0;i<nb_planetes;i++){
+        p[i]= p_[i]*m[i];
+    }
+}
+
 FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
     FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [3*nb_iterations];
 
@@ -401,9 +408,8 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_
             fichier << endl;
             }
         }
-        for (int i=0;i<nb_iterations-1;i++){
-            for (int j=0;j<nb_planetes;j++)
-                resu[nb_iterations+i][j]*=m[j];
+        for (int i=0;i<nb_iterations-1;i++){  // probleme ici lors de la reconversion vers p depuis p/m
+            changement_variables_inverse(resu[i+nb_iterations]);
         }
         return resu;
     }

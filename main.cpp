@@ -62,13 +62,13 @@ int main()
     */
     // ------------ ecriture de H -----------
 
-    ofstream valeur_H("../mopsi_gravitation/Datas/test_h_modif_V.txt", ios::out|ios::trunc );
+    ofstream valeur_H("../mopsi_gravitation/Datas/test_h_V.txt", ios::out|ios::trunc );
     if(valeur_H){
         cout << "calcul de l'hamiltonien" << endl;
-        for(int i =0; i<nb_iterations;i++){
+        for(int i =0; i<nb_iterations-1;i++){
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
-            double hamiltonien = /*H(resu[i],resu[i+nb_iterations]) +*/ h*h*H_modifie_V(resu[i],resu[i+nb_iterations]);
+            double hamiltonien = H(resu[i],resu[i+nb_iterations]) + h*h*H_modifie_V(resu[i],resu[i+nb_iterations]);
             valeur_H <<  hamiltonien  << endl;
         }
     }

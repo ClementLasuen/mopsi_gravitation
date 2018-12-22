@@ -36,7 +36,7 @@ def get_data(file_path):
 
 def plot_H(nb_iterations):
     resu=[]
-    with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/test_h_modif_V.txt") as f:
+    with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/test_h_V.txt") as f:
         for i in range(nb_iterations):
             texte = f.readline()
             resu.append(float(texte))
@@ -65,4 +65,4 @@ plt.legend()
 plt.axis('equal')
 plt.show()
 #%%
-plot_H(nb_iterations)
+plot_H(nb_iterations-1)
