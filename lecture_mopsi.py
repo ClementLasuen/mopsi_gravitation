@@ -64,5 +64,5 @@ ax.plot(positions[:,4,0],positions[:,4,1],positions[:,4,2],label='Jupiter')
 plt.legend()
 plt.axis('equal')
 plt.show()
-
+#%%
 plot_H(nb_iterations)

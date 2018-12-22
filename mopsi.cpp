@@ -33,7 +33,7 @@ double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_
     }
     return resu;
 }
-// Hamiltonien modifié pour euler symplectique
+// Hamiltonien modifié pour euler symplectique (implicite sur p)
 
 double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p){
     double resu = H(q,p);
@@ -56,7 +56,7 @@ double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<d
     FVector<FVector<double, 3>, nb_planetes> delta_V = interaction(q);
     for(int i=0;i<nb_planetes;i++){
         for(int j=0;j<3;j++){
-            resu += h*h*delta_V[i][j]*delta_V[i][j]/24;
+            resu += delta_V[i][j]*delta_V[i][j]/24;
         }
     }
 
@@ -67,7 +67,7 @@ double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<d
         for(int j=0;j<nb_planetes;j++){
             for(int k=0;k<3;k++){
                 for(int l=0;l<3;l++){
-                    resu +=  p[j][k]*hess[i*3 + k][j*3+l]*p[i][l]  /12;
+                    resu +=  p[j][k]*hess[j*3 + k][i*3+l]*p[i][l] /12;
                 }
             }
         }
@@ -110,7 +110,7 @@ FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne(FVector<FVector
             else{
                 for(int coord =0;coord<3;coord++){
                     for(int coord2=0; coord2<3;coord2++){
-                        dxi_dyj = - G*m[i]*m[j]*(q[i][coord]-q[j][coord])*(q[i][coord2]-q[j][coord2])/pow(norme(q[i] - q[j]),5.);
+                        dxi_dyj = -G*m[i]*m[j]*(q[i][coord]-q[j][coord])*(q[i][coord2]-q[j][coord2])/pow(norme(q[i] - q[j]),5.);
                         if (coord==coord2)
                             dxi_dyj += G*m[i]*m[j]/pow(norme(q[i] - q[j]),3.);
                         result[i*3+coord][j*3 +coord2]= dxi_dyj;
@@ -141,7 +141,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
-            cout <<"ecriture"<<endl;
+            cout <<"calcul des trajectoires"<<endl;
             fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
             for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
                 fichier << m[j]<<" ";
@@ -155,6 +155,8 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
         resu[nb_iterations]=p0;
 
         for(int i=1;i<nb_iterations;i++){
+            if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
+                cout << int(i/int(nb_iterations/100)) << endl;
             FVector<FVector<double,3>,nb_planetes>* resu_ = new FVector<FVector<double,3>,nb_planetes> [2];
             for(int j=0;j<nb_planetes;j++){
                 resu_[0][j] = resu[i-1][j];
@@ -219,7 +221,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
-            cout <<"ecriture"<<endl;
+            cout <<"calcul des trajectoires"<<endl;
             fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
             for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
                 fichier << m[j]<<" ";
@@ -235,6 +237,8 @@ FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3
         resu[nb_iterations]=p0;
         FVector<FVector<double,3>,nb_planetes>* point_fixe = new FVector<FVector<double,3>,nb_planetes> [2];
         for(int i =1;i<nb_iterations;i++){
+            if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
+                cout << int(i/int(nb_iterations/100)) << endl;
             point_fixe = pf_euler_implicite(resu[i-1],resu[i-1 + nb_iterations]);
             resu[i] = point_fixe[0];
             resu[nb_iterations+i] = point_fixe[1];
@@ -284,7 +288,7 @@ FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(FVector<FVector<dou
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
-            cout <<"ecriture"<<endl;
+            cout <<"calcul des trajectoires"<<endl;
             fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
             for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
                 fichier << m[j]<<" ";
@@ -323,7 +327,8 @@ FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(FVector<FVect
     resu[nb_iterations]=p0;
     //FVector<FVector<double,3>,nb_planetes> delta_V;
     for(int i=1;i<nb_iterations;i++){
-
+        if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
+            cout << int(i/int(nb_iterations/100)) << endl;
         for(int j=0; j<nb_planetes;j++) resu[i][j] = resu[i-1][j] + h*resu[i-1+nb_iterations][j]/m[j];
         FVector<FVector<double,3>,nb_planetes> delta_V = interaction(resu[i]);
         for(int j=0; j<nb_planetes;j++) resu[i+nb_iterations][j] = resu[i-1+nb_iterations][j] + h*delta_V[j];
@@ -354,7 +359,7 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
-            cout <<"ecriture"<<endl;
+            cout <<"calcul des trajectoires"<<endl;
             fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
             for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
                 fichier << m[j]<<" ";
@@ -371,6 +376,10 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_
         force_1 = interaction(q0);
 
         for(int i = 0;i<nb_iterations-1;i++){
+
+            if (i%int(nb_iterations/100)==0)
+                cout << int(i/int(nb_iterations/100)) << endl;
+
             force = force_1;
 
             //resu[2*nb_iterations + i+1] = resu[nb_iterations+i] + force*h/2; NE MARCHE PAS
