@@ -75,9 +75,9 @@ neptune.trail = curve(color = color.blue, radius=0.05)
 
 precious = ring(pos=saturne.pos, axis = saturne.pos,radius = 3, thickness=0.1)
 
+scene.autoscale=False
 
 lamp = local_light(pos=vector(0,0,0), color=color.white)
-autoscale=False
 decor = sphere(pos=vector(0,0,0),radius = 80,texture='ciel.jpg')
 
 rotation = vector(-0.5,1,0)
