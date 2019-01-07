@@ -48,7 +48,7 @@ int main()
     p[3]=p_uranus;
     p[4]=p_neptune;
 
-    FVector<FVector<double,3>,nb_planetes>* resu = verlet(q,p);
+    FVector<FVector<double,3>,nb_planetes>* resu = euler_symplectique(q,p);
     /*
     openWindow(500,500);
     // Je projete sur le plan 0xy pour voir si c'est potable
@@ -62,13 +62,13 @@ int main()
     */
     // ------------ ecriture de H -----------
 
-    ofstream valeur_H("../mopsi_gravitation/Datas/test_h_V.txt", ios::out|ios::trunc );
+    ofstream valeur_H("../mopsi_gravitation/Datas/test_h_ES.txt", ios::out|ios::trunc );
     if(valeur_H){
         cout << "calcul de l'hamiltonien" << endl;
         for(int i =0; i<nb_iterations-1;i++){
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
-            double hamiltonien = H(resu[i],resu[i+nb_iterations]) + h*h*H_modifie_V(resu[i],resu[i+nb_iterations]);
+            double hamiltonien = H(resu[i],resu[i+nb_iterations]) /*+ h*h*H_modifie_V(resu[i],resu[i+nb_iterations])*/;
             valeur_H <<  hamiltonien  << endl;
         }
     }

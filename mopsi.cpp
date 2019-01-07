@@ -24,10 +24,10 @@ FVector<FVector<double, 3>, nb_planetes> interaction(FVector<FVector<double, 3>,
 // --------------------------------------- Hamiltonien ------------------------------------------
 
 double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p){
-    double resu = norme(p[0])*norme(p[0])/(2*m[0]) ;
-    for(int i =1;i<nb_planetes;i++){
+    double resu = 0 ;
+    for(int i =0;i<nb_planetes;i++){
         resu += norme(p[i])*norme(p[i])/(2*m[i]);
-        for(int j=0;j<i-1;j++){
+        for(int j=0;j<i;j++){ // passage de i-1 à i
             resu -= G*m[i]*m[j]/norme(q[i]-q[j]);
         }
     }
@@ -301,6 +301,8 @@ FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(FVector<FVector<dou
         resu[0]=q0;
         resu[nb_iterations]=p0;
         for(int i =1;i<nb_iterations;i++){
+            if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
+                cout << int(i/int(nb_iterations/100)) << endl;
             FVector<FVector<double,3>,nb_planetes>* resu_ = new FVector<FVector<double,3>,nb_planetes> [2];
             resu_ = pf_euler_symplectique(resu[i-1],resu[nb_iterations + i-1]);
             resu[i] = resu_[0];
