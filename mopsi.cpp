@@ -27,7 +27,7 @@ double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_
     double resu = 0 ;
     for(int i =0;i<nb_planetes;i++){
         resu += norme(p[i])*norme(p[i])/(2*m[i]);
-        for(int j=0;j<i;j++){ // passage de i-1 à i
+        for(int j=0;j<i;j++){
             resu -= G*m[i]*m[j]/norme(q[i]-q[j]);
         }
     }

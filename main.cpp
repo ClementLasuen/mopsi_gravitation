@@ -48,7 +48,8 @@ int main()
     p[3]=p_uranus;
     p[4]=p_neptune;
 
-    FVector<FVector<double,3>,nb_planetes>* resu = euler_symplectique_sans_pf(q,p);
+
+    FVector<FVector<double,3>,nb_planetes>* resu = euler_implicite(q,p);
 
     // ------------ ecriture de H -----------
 
