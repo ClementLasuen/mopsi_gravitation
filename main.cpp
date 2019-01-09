@@ -48,27 +48,17 @@ int main()
     p[3]=p_uranus;
     p[4]=p_neptune;
 
-    FVector<FVector<double,3>,nb_planetes>* resu = euler_symplectique(q,p);
-    /*
-    openWindow(500,500);
-    // Je projete sur le plan 0xy pour voir si c'est potable
+    FVector<FVector<double,3>,nb_planetes>* resu = euler_symplectique_sans_pf(q,p);
 
-    for(int i =0; i<nb_iterations;i++){
-        fillCircle(resu[i][0][0]+200,resu[i][0][1]+200,2,YELLOW);
-        fillCircle(resu[i][1][0]+200,resu[i][1][1]+200,2,RED);
-    }
-
-    endGraphics();
-    */
     // ------------ ecriture de H -----------
 
-    ofstream valeur_H("../mopsi_gravitation/Datas/test_h_ES.txt", ios::out|ios::trunc );
+    ofstream valeur_H("../mopsi_gravitation/Datas/test_h_tot_ES_sspf.txt", ios::out|ios::trunc );
     if(valeur_H){
         cout << "calcul de l'hamiltonien" << endl;
         for(int i =0; i<nb_iterations-1;i++){
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
-            double hamiltonien = H(resu[i],resu[i+nb_iterations]) /*+ h*h*H_modifie_V(resu[i],resu[i+nb_iterations])*/;
+            double hamiltonien =  H(resu[i],resu[i+nb_iterations]) + h*H_modifie_ES(resu[i],resu[i+nb_iterations]);
             valeur_H <<  hamiltonien  << endl;
         }
     }

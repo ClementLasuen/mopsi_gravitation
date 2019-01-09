@@ -33,7 +33,7 @@ double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_
     }
     return resu;
 }
-// Hamiltonien modifié pour euler symplectique (implicite sur p) / il s'agit de H3 (voir article)
+// Hamiltonien modifié pour euler symplectique (implicite sur p) / il s'agit de H3 (voir article) -> *h pour H
 
 double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p){
     double resu = 0;
@@ -42,14 +42,13 @@ double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<do
         for(int j=0;j<3;j++) {
             //cout << h*p[i][j]* delta_V[i][j]/(2*m[i])  << endl;
             //cout << p[i][j] << endl;
-            resu +=  -h*p[i][j]* delta_V[i][j]/(2*m[i]);
+            resu +=  -p[i][j]* delta_V[i][j]/(2*m[i]);
         }
     }
     return resu;
 }
 
-// Hamiltonien modifié pour Verlet / il s'agit de H3 (voir article)
-// Attention à faire le changement de variable ??? JE NE PENSE PAs, voir article verlet --> oui il faut repasser à p et non à p/m
+// Hamiltonien modifié pour Verlet / il s'agit de H3 (voir article) -> *h² pour H
 
 double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<double, 3>, nb_planetes> p){
     double resu = 0;
@@ -147,7 +146,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
                 fichier << m[j]<<" ";
             fichier <<endl;
             for(int j=0;j<nb_planetes;j++)
-                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0] << " " << p0[j][1] << " " << p0[j][2] << " "; // On ecrit les conditions initiales
+                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j] << " "; // On ecrit les conditions initiales
             fichier << endl;
         }
         FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
@@ -227,7 +226,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3
                 fichier << m[j]<<" ";
             fichier <<endl;
             for(int j=0;j<nb_planetes;j++)
-                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0] << " " << p0[j][1] << " " << p0[j][2] << " "; // On ecrit les conditions initiales
+                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j] << " "; // On ecrit les conditions initiales
             fichier << endl;
         }
         FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
@@ -294,7 +293,7 @@ FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(FVector<FVector<dou
                 fichier << m[j]<<" ";
             fichier <<endl;
             for(int j=0;j<nb_planetes;j++)
-                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0] << " " << p0[j][1] << " " << p0[j][2] << " "; // On ecrit les conditions initiales
+                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j] << " "; // On ecrit les conditions initiales
             fichier << endl;
         }
         FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
@@ -323,19 +322,41 @@ FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(FVector<FVector<dou
 
 //Euler smplectique inverse
 
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0){
-    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
-    resu[0]=q0;
-    resu[nb_iterations]=p0;
-    //FVector<FVector<double,3>,nb_planetes> delta_V;
-    for(int i=1;i<nb_iterations;i++){
-        if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
-            cout << int(i/int(nb_iterations/100)) << endl;
-        for(int j=0; j<nb_planetes;j++) resu[i][j] = resu[i-1][j] + h*resu[i-1+nb_iterations][j]/m[j];
-        FVector<FVector<double,3>,nb_planetes> delta_V = interaction(resu[i]);
-        for(int j=0; j<nb_planetes;j++) resu[i+nb_iterations][j] = resu[i-1+nb_iterations][j] + h*delta_V[j];
+FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+    string file_name = string("../mopsi_gravitation/Datas/euler_symplectique_sans_pf.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
+    ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
+    if (fichier){
+        if(ecriture){
+            cout <<"calcul des trajectoires"<<endl;
+            fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
+            for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
+                fichier << m[j]<<" ";
+            fichier <<endl;
+            for(int j=0;j<nb_planetes;j++)
+                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j] << " "; // On ecrit les conditions initiales
+            fichier << endl;
+        }
+        FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
+        resu[0]=q0;
+        resu[nb_iterations]=p0;
+        //FVector<FVector<double,3>,nb_planetes> delta_V;
+        for(int i=1;i<nb_iterations;i++){
+            if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
+                cout << int(i/int(nb_iterations/100)) << endl;
+            for(int j=0; j<nb_planetes;j++) resu[i][j] = resu[i-1][j] + h*resu[i-1+nb_iterations][j]/m[j];
+            FVector<FVector<double,3>,nb_planetes> delta_V = interaction(resu[i]);
+            for(int j=0; j<nb_planetes;j++) resu[i+nb_iterations][j] = resu[i-1+nb_iterations][j] + h*delta_V[j];
+            if(ecriture){
+                for(int j=0;j<nb_planetes;j++)
+                    fichier << resu[i][j][0] << " " << resu[i][j][1] << " " << resu[i][j][2] << " " << resu[nb_iterations+i][j][0]/m[j] << " " << resu[nb_iterations+i][j][1]/m[j] << " " << resu[nb_iterations+i][j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
+            fichier << endl;
+            }
+        }
+        return resu;
     }
-    return resu;
+    else{
+        cerr<<"Impossible d'ouvrir le fichier"<<endl;
+    }
 }
 
 
@@ -374,7 +395,7 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_
                 fichier << m[j]<<" ";
             fichier <<endl;
             for(int j=0;j<nb_planetes;j++)
-                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0] << " " << p0[j][1] << " " << p0[j][2] << " "; // On ecrit les conditions initiales
+                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j] << " "; // On ecrit les conditions initiales
             fichier << endl;
         }
         changement_variables(p0);
@@ -410,7 +431,7 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_
             fichier << endl;
             }
         }
-        for (int i=0;i<nb_iterations-1;i++){  // probleme ici lors de la reconversion vers p depuis p/m
+        for (int i=0;i<nb_iterations-1;i++){
             changement_variables_inverse(resu[i+nb_iterations]);
         }
         return resu;
@@ -419,9 +440,6 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
     }
 }
-
-// Ne pas oublier de le faire lorsque on appelle interaction -> force/masse
-
 
 
 
