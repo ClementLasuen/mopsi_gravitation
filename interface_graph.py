@@ -36,7 +36,42 @@ def get_data():
                 vitesses[i,j,2] = float(coordonnees[6*j+5])
         return(nb_iterations,nb_planetes,positions,vitesses)
     
+# TEEEEEEEEST !!!!!!!!
 
+def norme(q):
+    return sqrt(q[0]**2 + q[1]**2 + q[2]**2)
+
+def H(q,v):
+    
+    #passer de la vitesse à la quantité de mouvement
+    for i in range(nb_planetes):
+        for j in range(3):
+            v[i,j] = liste_m[i]*v[i,j]
+    resu=0
+    for i in range(nb_planetes):
+        resu += norme(v[i,:])*2 /liste_m[i]
+        for j in range(i):
+            resu -= G*liste_m[i]*liste_m[j]/norme(positions[i,:] - positions[j,:])
+    
+    return resu;
+    
+    
+    
+import unittest
+class cas_tests(unittest.TestCase):
+   
+     def test_BOUNDED(self,verlet):
+         C = 1000
+         # JE CALCULE COMME CA CAR JE N AI PAS ACCES AU PAS DE TEMPS
+         h = int ((positions[1,0,0] - positions[0,0,0])/vitesses[1,0,0] )
+         if(verlet):
+             h = h*h
+         for i in range(nb_iterations) :
+             self.assertTrue(H(position[i,:,:],vitesses[i,:,:]) <= h*C)
+
+#    
+# if __name__ == "__main__":
+#     unittest.main()
 
 scene.title = "Enhanced 3D of surfaces using bump maps"
 scene.caption = "Drag the single light with the left button, rotate with the right button. \n\n"
