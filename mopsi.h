@@ -62,11 +62,7 @@ FVector<FVector<double,3>,nb_planetes>* pf_euler_symplectique(FVector<FVector<do
 
 FVector<FVector<double,3>,nb_planetes>* euler_symplectique(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
 
-<<<<<<< HEAD
 FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
-=======
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0);
->>>>>>> commit du 9 janv
 
 
 // Verlet

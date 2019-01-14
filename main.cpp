@@ -49,7 +49,20 @@ int main()
     p[4]=p_neptune;
 
 
-    FVector<FVector<double,3>,nb_planetes>* resu = euler_implicite(q,p);
+    FVector<FVector<double,3>,nb_planetes>* resu = verlet(q,p);
+
+    //  Test !
+    /*
+    int ordre =2; // 1 si symplectique
+    int dt =h;
+    double C = 1000; // BONNE CONSTANTE ?
+    for(int i =0;i<nb_iterations;i++){
+        if( ordre ==2) dt = h*h;
+        if( abs(H(resu[i],resu[nb_iterations+i]) - H(resu[0],resu[nb_iterations])) > dt * C ){
+
+        }
+    }*/
+
 
     // ------------ ecriture de H -----------
 
@@ -59,7 +72,7 @@ int main()
         for(int i =0; i<nb_iterations-1;i++){
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
-            double hamiltonien =  H(resu[i],resu[i+nb_iterations]) + h*H_modifie_ES(resu[i],resu[i+nb_iterations]);
+            double hamiltonien =  H(resu[i],resu[i+nb_iterations]) + h*h*H_modifie_V(resu[i],resu[i+nb_iterations]);
             valeur_H <<  hamiltonien  << endl;
         }
     }
