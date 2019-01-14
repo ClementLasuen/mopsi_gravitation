@@ -48,20 +48,9 @@ int main()
     p[3]=p_uranus;
     p[4]=p_neptune;
 
+    double h = 100;
 
-    FVector<FVector<double,3>,nb_planetes>* resu = verlet(q,p);
-
-    //  Test !
-    /*
-    int ordre =2; // 1 si symplectique
-    int dt =h;
-    double C = 1000; // BONNE CONSTANTE ?
-    for(int i =0;i<nb_iterations;i++){
-        if( ordre ==2) dt = h*h;
-        if( abs(H(resu[i],resu[nb_iterations+i]) - H(resu[0],resu[nb_iterations])) > dt * C ){
-
-        }
-    }*/
+    FVector<FVector<double,3>,nb_planetes>* resu = verlet(h,q,p);
 
 
     // ------------ ecriture de H -----------

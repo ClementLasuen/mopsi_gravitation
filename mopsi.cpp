@@ -134,7 +134,7 @@ double ecart(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double
 
 // Euler explicite
 
-FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+FVector<FVector<double,3>,nb_planetes>* euler_explicite(double h,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
 
     string file_name = string("../mopsi_gravitation/Datas/euler_explicite.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
@@ -186,7 +186,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
 // Euler imlicite
 
 
-FVector<FVector<double, 3>, nb_planetes> *pf_euler_implicite(FVector<FVector<double, 3>, nb_planetes> qn, FVector<FVector<double, 3>, nb_planetes> pn ){
+FVector<FVector<double, 3>, nb_planetes> *pf_euler_implicite(double h,FVector<FVector<double, 3>, nb_planetes> qn, FVector<FVector<double, 3>, nb_planetes> pn ){
     double epsilon = 0.000001; // precision comment choisir epsilon ?
     int compteur =0;
     FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2];
@@ -214,7 +214,7 @@ FVector<FVector<double, 3>, nb_planetes> *pf_euler_implicite(FVector<FVector<dou
     return resu;
 }
 
-FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
 
     string file_name = string("../mopsi_gravitation/Datas/euler_implicite.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
@@ -238,7 +238,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3
         for(int i =1;i<nb_iterations;i++){
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
-            point_fixe = pf_euler_implicite(resu[i-1],resu[i-1 + nb_iterations]);
+            point_fixe = pf_euler_implicite(h,resu[i-1],resu[i-1 + nb_iterations]);
             resu[i] = point_fixe[0];
             resu[nb_iterations+i] = point_fixe[1];
             if(ecriture){
@@ -256,7 +256,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3
 
 // Euler symplectique (implicite sur q, explicite sur p)
 
-FVector<FVector<double, 3>, nb_planetes> *pf_euler_symplectique(FVector<FVector<double, 3>, nb_planetes> qn, FVector<FVector<double, 3>, nb_planetes> pn ){
+FVector<FVector<double, 3>, nb_planetes> *pf_euler_symplectique(double h,FVector<FVector<double, 3>, nb_planetes> qn, FVector<FVector<double, 3>, nb_planetes> pn ){
     double epsilon = 0.0001; // precision Comment choisir epsilon ?
     int compteur =0;
     FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2];
@@ -281,7 +281,7 @@ FVector<FVector<double, 3>, nb_planetes> *pf_euler_symplectique(FVector<FVector<
     return resu;
 }
 
-FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
+FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(double h,FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
 
     string file_name = string("../mopsi_gravitation/Datas/euler_symplectique.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
@@ -303,7 +303,7 @@ FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(FVector<FVector<dou
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
             FVector<FVector<double,3>,nb_planetes>* resu_ = new FVector<FVector<double,3>,nb_planetes> [2];
-            resu_ = pf_euler_symplectique(resu[i-1],resu[nb_iterations + i-1]);
+            resu_ = pf_euler_symplectique(h,resu[i-1],resu[nb_iterations + i-1]);
             resu[i] = resu_[0];
             resu[nb_iterations+i] = resu_[1];
             if(ecriture){
@@ -322,7 +322,7 @@ FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(FVector<FVector<dou
 
 //Euler smplectique inverse
 
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(double h,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
     string file_name = string("../mopsi_gravitation/Datas/euler_symplectique_sans_pf.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
@@ -378,7 +378,7 @@ void changement_variables_inverse(FVector<FVector<double, 3>, nb_planetes> &p){
     }
 }
 
-FVector<FVector<double, 3>, nb_planetes> *verlet(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
+FVector<FVector<double, 3>, nb_planetes> *verlet(double h, FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
     FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [3*nb_iterations];
 
     // resu[i] donne les positions de toutes les planètes à l'iteration i;

@@ -9,7 +9,7 @@ using namespace std;
 using namespace Imagine;
 
 const int nb_planetes =5;
-const double h = 1;
+//const double h = 1;
 const int nb_iterations = 200000;
 const double m [nb_planetes] = {1.00000597682,0.0009548, 0.00029, 0.0000437, 0.0000518};
 const double G =2.959122*0.0001;
@@ -37,7 +37,7 @@ double ecart(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3
 
 // Euler explicite
 
-FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
+FVector<FVector<double,3>,nb_planetes>* euler_explicite(double h, FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
 /* ecrit un fichier avec pour premiere ligne le nombre d'iterations puis le nombre de planetes
    En deuxieme ligne il y a la masse de toute les planetes
    Vient ensuite n_iterations lignes avec les coordonnes puis les vitesses de toutes les planetes (donc nb_iterations lignes de 6*nb_planete nombres)
@@ -47,22 +47,22 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(FVector<FVector<double,3
 
 // Calcule le point fixe à l'itération n
 // Ne prend pas en argument la masse car le tableau des masses est donné et CONSTANT
-FVector<FVector<double,3>,nb_planetes>* pf_euler_implicite(FVector<FVector<double,3>,nb_planetes> qn, FVector<FVector<double,3>,nb_planetes> pn);
+FVector<FVector<double,3>,nb_planetes>* pf_euler_implicite(double h,FVector<FVector<double,3>,nb_planetes> qn, FVector<FVector<double,3>,nb_planetes> pn);
 /* ecrit un fichier avec pour premiere ligne le nombre d'iterations puis le nombre de planetes
    En deuxieme ligne il y a la masse de toute les planetes
    Vient ensuite n_iterations lignes avec les coordonnes puis les vitesses de toutes les planetes (donc nb_iterations lignes de 6*nb_planete nombres)
 */
 
 // Renvoie l'ensemble des positions et des quantités de mouvement
-FVector<FVector<double,3>,nb_planetes>* euler_implicite(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
+FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h,FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
 
 // Euler symplectique
 
-FVector<FVector<double,3>,nb_planetes>* pf_euler_symplectique(FVector<FVector<double,3>,nb_planetes> qn, FVector<FVector<double,3>,nb_planetes> pn );
+FVector<FVector<double,3>,nb_planetes>* pf_euler_symplectique(double h,FVector<FVector<double,3>,nb_planetes> qn, FVector<FVector<double,3>,nb_planetes> pn );
 
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
+FVector<FVector<double,3>,nb_planetes>* euler_symplectique(double h,FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
 
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
+FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(double h,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
 
 
 // Verlet
@@ -71,4 +71,4 @@ void changement_variables(FVector<FVector<double,3>,nb_planetes> &p);
 
 void changement_variables_inverse(FVector<FVector<double,3>,nb_planetes> &p);
 
-FVector<FVector<double,3>,nb_planetes>* verlet(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
+FVector<FVector<double,3>,nb_planetes>* verlet(double h,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
