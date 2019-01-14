@@ -1,6 +1,6 @@
 
 #include "mopsi.h"
-
+#include</home/quentin/anaconda3/include/python3.5m/Python.h>
 
 
 int main()
@@ -63,6 +63,10 @@ int main()
         }
     }
     else cout << "pb ouverture" << endl;
+
+    Py_Initialize();
+
+    Py_Finalize();
 
     return 0;
 }
