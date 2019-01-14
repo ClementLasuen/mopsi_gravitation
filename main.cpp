@@ -48,7 +48,10 @@ int main()
     p[3]=p_uranus;
     p[4]=p_neptune;
 
-    FVector<FVector<double,3>,nb_planetes>* resu = euler_symplectique_sans_pf(q,p);
+    double h = 100;
+
+    FVector<FVector<double,3>,nb_planetes>* resu = verlet(h,q,p);
+
 
     // ------------ ecriture de H -----------
 
@@ -58,7 +61,7 @@ int main()
         for(int i =0; i<nb_iterations-1;i++){
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
-            double hamiltonien =  H(resu[i],resu[i+nb_iterations]) + h*H_modifie_ES(resu[i],resu[i+nb_iterations]);
+            double hamiltonien =  H(resu[i],resu[i+nb_iterations]) + h*h*H_modifie_V(resu[i],resu[i+nb_iterations]);
             valeur_H <<  hamiltonien  << endl;
         }
     }
