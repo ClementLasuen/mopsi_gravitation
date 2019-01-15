@@ -37,7 +37,7 @@ double ecart(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3
 
 // Euler explicite
 
-FVector<FVector<double,3>,nb_planetes>* euler_explicite(double h, FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
+FVector<FVector<double,3>,nb_planetes>* euler_explicite(double h, bool ecriture = true);
 /* ecrit un fichier avec pour premiere ligne le nombre d'iterations puis le nombre de planetes
    En deuxieme ligne il y a la masse de toute les planetes
    Vient ensuite n_iterations lignes avec les coordonnes puis les vitesses de toutes les planetes (donc nb_iterations lignes de 6*nb_planete nombres)
@@ -54,15 +54,15 @@ FVector<FVector<double,3>,nb_planetes>* pf_euler_implicite(double h,FVector<FVec
 */
 
 // Renvoie l'ensemble des positions et des quantités de mouvement
-FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h,FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
+FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h, bool ecriture = true);
 
 // Euler symplectique
 
 FVector<FVector<double,3>,nb_planetes>* pf_euler_symplectique(double h,FVector<FVector<double,3>,nb_planetes> qn, FVector<FVector<double,3>,nb_planetes> pn );
 
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique(double h,FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
+FVector<FVector<double,3>,nb_planetes>* euler_symplectique(double h, bool ecriture = true);
 
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(double h,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
+FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(double h, bool ecriture = true);
 
 
 // Verlet
@@ -71,4 +71,4 @@ void changement_variables(FVector<FVector<double,3>,nb_planetes> &p);
 
 void changement_variables_inverse(FVector<FVector<double,3>,nb_planetes> &p);
 
-FVector<FVector<double,3>,nb_planetes>* verlet(double h,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture = true);
+FVector<FVector<double,3>,nb_planetes>* verlet(double h, bool ecriture = true);
