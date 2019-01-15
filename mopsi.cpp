@@ -134,8 +134,28 @@ double ecart(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double
 
 // Euler explicite
 
-FVector<FVector<double,3>,nb_planetes>* euler_explicite(double h,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+FVector<FVector<double,3>,nb_planetes>* euler_explicite(double h, bool ecriture){//,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
 
+    // --------------------------------- Initialistation ---------------------------------------------------------
+
+    FVector<FVector<double,3>,nb_planetes> p0;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
+    FVector<FVector<double,3>,nb_planetes> q0;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
+
+    q0[0]=q_soleil;
+    q0[1]=q_jupiter;
+    q0[2]=q_saturne;
+    q0[3]=q_uranus;
+    q0[4]=q_neptune;
+
+    p0[0]=p_soleil;
+    p0[1]=p_jupiter;
+    p0[2]=p_saturne;
+    p0[3]=p_uranus;
+    p0[4]=p_neptune;
+
+
+
+    //-------------------------------------------------------------------------------------------------------------
     string file_name = string("../mopsi_gravitation/Datas/euler_explicite.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
@@ -214,7 +234,29 @@ FVector<FVector<double, 3>, nb_planetes> *pf_euler_implicite(double h,FVector<FV
     return resu;
 }
 
-FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h, bool ecriture){//,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+
+
+    // --------------------------------- Initialistation ---------------------------------------------------------
+
+    FVector<FVector<double,3>,nb_planetes> p0;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
+    FVector<FVector<double,3>,nb_planetes> q0;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
+
+    q0[0]=q_soleil;
+    q0[1]=q_jupiter;
+    q0[2]=q_saturne;
+    q0[3]=q_uranus;
+    q0[4]=q_neptune;
+
+    p0[0]=p_soleil;
+    p0[1]=p_jupiter;
+    p0[2]=p_saturne;
+    p0[3]=p_uranus;
+    p0[4]=p_neptune;
+
+
+
+    //-------------------------------------------------------------------------------------------------------------
 
     string file_name = string("../mopsi_gravitation/Datas/euler_implicite.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
@@ -281,7 +323,28 @@ FVector<FVector<double, 3>, nb_planetes> *pf_euler_symplectique(double h,FVector
     return resu;
 }
 
-FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(double h,FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
+FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(double h, bool ecriture){//,FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
+
+    // --------------------------------- Initialistation ---------------------------------------------------------
+
+    FVector<FVector<double,3>,nb_planetes> p0;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
+    FVector<FVector<double,3>,nb_planetes> q0;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
+
+    q0[0]=q_soleil;
+    q0[1]=q_jupiter;
+    q0[2]=q_saturne;
+    q0[3]=q_uranus;
+    q0[4]=q_neptune;
+
+    p0[0]=p_soleil;
+    p0[1]=p_jupiter;
+    p0[2]=p_saturne;
+    p0[3]=p_uranus;
+    p0[4]=p_neptune;
+
+
+
+    //-------------------------------------------------------------------------------------------------------------
 
     string file_name = string("../mopsi_gravitation/Datas/euler_symplectique.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
@@ -322,7 +385,29 @@ FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(double h,FVector<FV
 
 //Euler smplectique inverse
 
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(double h,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(double h, bool ecriture){//,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+
+    // --------------------------------- Initialistation ---------------------------------------------------------
+
+    FVector<FVector<double,3>,nb_planetes> p0;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
+    FVector<FVector<double,3>,nb_planetes> q0;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
+
+    q0[0]=q_soleil;
+    q0[1]=q_jupiter;
+    q0[2]=q_saturne;
+    q0[3]=q_uranus;
+    q0[4]=q_neptune;
+
+    p0[0]=p_soleil;
+    p0[1]=p_jupiter;
+    p0[2]=p_saturne;
+    p0[3]=p_uranus;
+    p0[4]=p_neptune;
+
+
+
+    //-------------------------------------------------------------------------------------------------------------
+
     string file_name = string("../mopsi_gravitation/Datas/euler_symplectique_sans_pf.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     if (fichier){
@@ -378,7 +463,31 @@ void changement_variables_inverse(FVector<FVector<double, 3>, nb_planetes> &p){
     }
 }
 
-FVector<FVector<double, 3>, nb_planetes> *verlet(double h, FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
+FVector<FVector<double, 3>, nb_planetes> *verlet(double h,bool ecriture){//, FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
+
+    // --------------------------------- Initialistation ---------------------------------------------------------
+
+    FVector<FVector<double,3>,nb_planetes> p0;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
+    FVector<FVector<double,3>,nb_planetes> q0;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
+
+    q0[0]=q_soleil;
+    q0[1]=q_jupiter;
+    q0[2]=q_saturne;
+    q0[3]=q_uranus;
+    q0[4]=q_neptune;
+
+    p0[0]=p_soleil;
+    p0[1]=p_jupiter;
+    p0[2]=p_saturne;
+    p0[3]=p_uranus;
+    p0[4]=p_neptune;
+
+
+
+    //-------------------------------------------------------------------------------------------------------------
+
+
+
     FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [3*nb_iterations];
 
     // resu[i] donne les positions de toutes les planètes à l'iteration i;
@@ -440,6 +549,10 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(double h, FVector<FVector<doubl
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
     }
 }
+
+
+
+
 
 
 
