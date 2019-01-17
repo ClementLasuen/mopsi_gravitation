@@ -37,7 +37,7 @@ double ecart(FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3
 
 // Euler explicite
 
-FVector<FVector<double,3>,nb_planetes>* euler_explicite(double h, bool ecriture = true);
+void euler_explicite(double h, bool ecriture = true);
 /* ecrit un fichier avec pour premiere ligne le nombre d'iterations puis le nombre de planetes
    En deuxieme ligne il y a la masse de toute les planetes
    Vient ensuite n_iterations lignes avec les coordonnes puis les vitesses de toutes les planetes (donc nb_iterations lignes de 6*nb_planete nombres)
