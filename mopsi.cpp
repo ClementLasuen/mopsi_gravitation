@@ -445,6 +445,7 @@ void euler_symplectique_sans_pf(double h, bool ecriture){
             fichier_H << H(q,p);
             fichier_H << endl;
             fichier_H_modifie << H(q,p) + h*H_modifie_ES(q,p);
+            fichier_H_modifie << endl;
             p0=p;
             q0=q;
             }
@@ -498,6 +499,8 @@ void verlet(double h,bool ecriture){
     p = p0;
     q = q0;
 
+
+    double hamiltonien;
     //-------------------------------------------------------------------------------------------------------------
 
     string file_name = string("../mopsi_gravitation/Datas/verlet.txt");
@@ -520,34 +523,42 @@ void verlet(double h,bool ecriture){
             fichier << endl;
         }
         changement_variables(p0);
+        changement_variables(p);
 
-        FVector<FVector<double, 3>, nb_planetes> force,force_1;
-        force_1 = interaction(q0);
-
+        FVector<FVector<double, 3>, nb_planetes> force = interaction(q);
+        //force_1 = interaction(q0);
+        //force = interaction(q);
         for(int i = 0;i<nb_iterations-1;i++){
 
             if (i%int(nb_iterations/100)==0)
                 cout << int(i/int(nb_iterations/100)) << endl;
 
-            force = force_1;
+            //force = force_1;
 
             for(int j=0;j<nb_planetes;j++){
-                p[j] += force[j]*h/(2*m[j]);
+                p[j] += force[j]*h/(2.0*m[j]);
                 q[j] += h*p[j];
-
             }
-            force_1 = interaction(q);
+            //force_1 = interaction(q);
+            force = interaction(q);
             for(int j =0;j<nb_planetes;j++){
-                p += h*force_1[j]/(2*m[j]);
+                p[j] += h*force[j]/(2.0*m[j]);
 
             }
             if(ecriture){
                 for(int j=0;j<nb_planetes;j++)
                     fichier << q[j][0] << " " << q[j][1] << " " << q[j][2] << " " <<p[j][0] << " " << p[j][1] << " " << p[j][2]<< " "; // On ecrit les positions puis vitesses d'une planete
             fichier << endl;
-            fichier_H << H(q,p);
+
+            changement_variables_inverse(p);
+            hamiltonien = H(q,p);
+
+            fichier_H << hamiltonien;
+
             fichier_H << endl;
-            fichier_H_modifie << H(q,p) + h*h*H_modifie_V(q,p);
+            fichier_H_modifie << hamiltonien - h*h*H_modifie_V(q,p);
+            changement_variables(p);
+            fichier_H_modifie << endl;
             }
             p0=p;
             q0=q;
@@ -560,4 +571,3 @@ void verlet(double h,bool ecriture){
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
     }
 }
-
