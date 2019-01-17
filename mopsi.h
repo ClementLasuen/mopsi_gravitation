@@ -70,5 +70,4 @@ FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(double h, boo
 void changement_variables(FVector<FVector<double,3>,nb_planetes> &p);
 
 void changement_variables_inverse(FVector<FVector<double,3>,nb_planetes> &p);
-
-FVector<FVector<double,3>,nb_planetes>* verlet(double h, bool ecriture = true);
+void verlet(double h, bool ecriture = true);
