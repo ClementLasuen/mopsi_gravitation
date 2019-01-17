@@ -134,12 +134,10 @@ double ecart(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double
 
 // Euler explicite
 
-void euler_explicite(double h, bool ecriture){//,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
-
+void euler_explicite(double h, bool ecriture){
     // --------------------------------- Initialistation ---------------------------------------------------------
 
-    FVector<FVector<double,3>,nb_planetes> p0;
-    FVector<FVector<double,3>,nb_planetes> q0;
+    FVector<FVector<double,3>,nb_planetes> p0,q0,p,q;
 
     q0[0]=q_soleil;
     q0[1]=q_jupiter;
@@ -153,12 +151,16 @@ void euler_explicite(double h, bool ecriture){//,FVector<FVector<double,3>,nb_pl
     p0[3]=p_uranus;
     p0[4]=p_neptune;
 
-    FVector<FVector<double,3>,nb_planetes> q;
-    FVector<FVector<double,3>,nb_planetes> p;
+    p=p0;
+    q=q0;
+
 
     //-------------------------------------------------------------------------------------------------------------
-    string file_name = string("../mopsi_gravitation/Datas/euler_explicite.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
-    ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
+    string file_name = string("../mopsi_gravitation/Datas/euler_explicite.txt");
+    //+string<int>(nb_iterations)+string("_")+string<int>(h);
+    string file_name_H = string("../mopsi_gravitation/Datas/euler_explicite_H.txt");
+    ofstream fichier(file_name.c_str(), ios::out|ios::trunc);
+    ofstream fichier_H(file_name_H.c_str(), ios::out|ios::trunc);// On va ecrire a la fin du fichier
     if (fichier){
         if(ecriture){
             cout <<"calcul des trajectoires"<<endl;
@@ -170,41 +172,34 @@ void euler_explicite(double h, bool ecriture){//,FVector<FVector<double,3>,nb_pl
                 fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j] << " "; // On ecrit les conditions initiales
             fichier << endl;
         }
-        /*FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
-        resu[0]=q0;
-        resu[nb_iterations]=p0;*/
+
 
         for(int i=1;i<nb_iterations;i++){
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
-            /*FVector<FVector<double,3>,nb_planetes>* resu_ = new FVector<FVector<double,3>,nb_planetes> [2];
-            for(int j=0;j<nb_planetes;j++){
-                resu_[0][j] = resu[i-1][j];
-                resu_[1][j] = resu[nb_iterations+i-1][j];
-            }
-            FVector<FVector<double,3>,nb_planetes> p_point = interaction(resu_[0]);*/
+
             FVector<FVector<double,3>,nb_planetes> p_point = interaction(q0);
             for(int j=0;j<nb_planetes;j++){
-                /*resu_[0][j] = resu_[0][j] + h*resu_[1][j]/m[j];
-                resu_[1][j] = resu_[1][j] + h*p_point[j];*/
-                q[j] += h*p0[j]/m[j];
-                p[j] += h*p_point[j];
+
+                q[j] = q[j] + h*p0[j]/m[j];
+                p[j] = p[j]+ h*p_point[j];
             }
 
-            /*resu[i] = resu_[0];
-            resu[nb_iterations+i] = resu_[1];*/
             if(ecriture){
                 for(int j=0;j<nb_planetes;j++)
                     fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
             fichier << endl;
+            fichier_H << H(q,p);
+            fichier_H << endl;
             }
             p0=p;
             q0=q;
 
-            //delete[] resu_;
+
         }
         fichier.close();
-        //return resu;
+        fichier_H.close();
+
     }
     else{
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
@@ -471,12 +466,11 @@ void changement_variables_inverse(FVector<FVector<double, 3>, nb_planetes> &p){
     }
 }
 
-FVector<FVector<double, 3>, nb_planetes> *verlet(double h,bool ecriture){//, FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
+void verlet(double h,bool ecriture){
 
     // --------------------------------- Initialistation ---------------------------------------------------------
 
-    FVector<FVector<double,3>,nb_planetes> p0;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
-    FVector<FVector<double,3>,nb_planetes> q0;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
+    FVector<FVector<double,3>,nb_planetes> p0,q0,p,q;
 
     q0[0]=q_soleil;
     q0[1]=q_jupiter;
@@ -490,20 +484,16 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(double h,bool ecriture){//, FVe
     p0[3]=p_uranus;
     p0[4]=p_neptune;
 
-
+    p = p0;
+    q = q0;
 
     //-------------------------------------------------------------------------------------------------------------
 
-
-
-    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [3*nb_iterations];
-
-    // resu[i] donne les positions de toutes les planètes à l'iteration i;
-    // resu[i + nb_iterations] donne les quantités de mouvement
-    // resu[i + nb_iterations] donne (p_n+1/2)/m
-
-    string file_name = string("../mopsi_gravitation/Datas/verlet.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
+    string file_name = string("../mopsi_gravitation/Datas/verlet.txt");
+    //+string<int>(nb_iterations)+string("_")+string<int>(h);
+    string file_name_H = string("../mopsi_gravitation/Datas/verlet_H.txt");
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
+    ofstream fichier_H(file_name_H.c_str(), ios::out|ios::trunc);
     if (fichier){
         if(ecriture){
             cout <<"calcul des trajectoires"<<endl;
@@ -516,8 +506,6 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(double h,bool ecriture){//, FVe
             fichier << endl;
         }
         changement_variables(p0);
-        resu[0]=q0;
-        resu[nb_iterations]=p0;
 
         FVector<FVector<double, 3>, nb_planetes> force,force_1;
         force_1 = interaction(q0);
@@ -529,38 +517,29 @@ FVector<FVector<double, 3>, nb_planetes> *verlet(double h,bool ecriture){//, FVe
 
             force = force_1;
 
-            //resu[2*nb_iterations + i+1] = resu[nb_iterations+i] + force*h/2; NE MARCHE PAS
-            //resu[i+1] = resu[i] + h*resu[2*nb_iterations + i]; NE MARCHE PAS
-
             for(int j=0;j<nb_planetes;j++){
-
-                resu[2*nb_iterations + i+1][j] = resu[nb_iterations+i][j] + force[j]*h/(2*m[j]);
-                resu[i+1][j] = resu[i][j] + h*resu[2*nb_iterations + i][j];
+                p[j] += force[j]*h/(2*m[j]);
+                q[j] += h*p[j];
 
             }
-            force_1 = interaction(resu[i+1]);
+            force_1 = interaction(q);
             for(int j =0;j<nb_planetes;j++){
-                resu[nb_iterations + i+1][j] = resu[2*nb_iterations + i+1][j] + h*force_1[j]/(2*m[j]);
+                p += h*force_1[j]/(2*m[j]);
+
             }
             if(ecriture){
                 for(int j=0;j<nb_planetes;j++)
-                    fichier << resu[i][j][0] << " " << resu[i][j][1] << " " << resu[i][j][2] << " " << resu[nb_iterations+i][j][0] << " " << resu[nb_iterations+i][j][1] << " " << resu[nb_iterations+i][j][2]<< " "; // On ecrit les positions puis vitesses d'une planete
+                    fichier << q[j][0] << " " << q[j][1] << " " << q[j][2] << " " <<p[j][0] << " " << p[j][1] << " " << p[j][2]<< " "; // On ecrit les positions puis vitesses d'une planete
             fichier << endl;
+            fichier_H << H(q,p);
+            fichier_H << endl;
             }
         }
-        for (int i=0;i<nb_iterations-1;i++){
-            changement_variables_inverse(resu[i+nb_iterations]);
-        }
-        return resu;
+        fichier.close();
+        fichier_H.close();
     }
     else{
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
     }
 }
-
-
-
-
-
-
 
