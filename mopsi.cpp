@@ -388,12 +388,11 @@ FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(double h, bool ecri
 
 //Euler smplectique inverse
 
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(double h, bool ecriture){//,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+void euler_symplectique_sans_pf(double h, bool ecriture){
 
     // --------------------------------- Initialistation ---------------------------------------------------------
 
-    FVector<FVector<double,3>,nb_planetes> p0;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
-    FVector<FVector<double,3>,nb_planetes> q0;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
+    FVector<FVector<double,3>,nb_planetes> p0,q0,p,q;
 
     q0[0]=q_soleil;
     q0[1]=q_jupiter;
@@ -407,12 +406,18 @@ FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(double h, boo
     p0[3]=p_uranus;
     p0[4]=p_neptune;
 
-
+    p=p0;
+    q=q0;
 
     //-------------------------------------------------------------------------------------------------------------
 
     string file_name = string("../mopsi_gravitation/Datas/euler_symplectique_sans_pf.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
+    string file_name_H = string("../mopsi_gravitation/Datas/euler_symplectique_sans_pf_H.txt");
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
+    ofstream fichier_H(file_name_H.c_str(), ios::out|ios::trunc);
+
+    string file_name_H_modifie = string("../mopsi_gravitation/Datas/euler_symplectique_sans_pf_H_modifie.txt");
+    ofstream fichier_H_modifie(file_name_H_modifie.c_str(), ios::out|ios::trunc);
     if (fichier){
         if(ecriture){
             cout <<"calcul des trajectoires"<<endl;
@@ -424,23 +429,29 @@ FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(double h, boo
                 fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j] << " "; // On ecrit les conditions initiales
             fichier << endl;
         }
-        FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
-        resu[0]=q0;
-        resu[nb_iterations]=p0;
-        //FVector<FVector<double,3>,nb_planetes> delta_V;
+
         for(int i=1;i<nb_iterations;i++){
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
-            for(int j=0; j<nb_planetes;j++) resu[i][j] = resu[i-1][j] + h*resu[i-1+nb_iterations][j]/m[j];
-            FVector<FVector<double,3>,nb_planetes> delta_V = interaction(resu[i]);
-            for(int j=0; j<nb_planetes;j++) resu[i+nb_iterations][j] = resu[i-1+nb_iterations][j] + h*delta_V[j];
+            for(int j=0; j<nb_planetes;j++) q[j] += h*p0[j]/m[j];
+
+            FVector<FVector<double,3>,nb_planetes> delta_V = interaction(q);
+            for(int j=0; j<nb_planetes;j++) p[j] += h*delta_V[j];
+
             if(ecriture){
                 for(int j=0;j<nb_planetes;j++)
-                    fichier << resu[i][j][0] << " " << resu[i][j][1] << " " << resu[i][j][2] << " " << resu[nb_iterations+i][j][0]/m[j] << " " << resu[nb_iterations+i][j][1]/m[j] << " " << resu[nb_iterations+i][j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
+                    fichier << q[j][0] << " " << q[j][1] << " " << q[j][2] << " " << p[j][0]/m[j] << " " << p[j][1]/m[j] << " " << p[j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
             fichier << endl;
+            fichier_H << H(q,p);
+            fichier_H << endl;
+            fichier_H_modifie << H(q,p) + h*H_modifie_ES(q,p);
+            p0=p;
+            q0=q;
             }
         }
-        return resu;
+        fichier.close();
+        fichier_H.close();
+        fichier_H_modifie.close();
     }
     else{
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
@@ -494,6 +505,9 @@ void verlet(double h,bool ecriture){
     string file_name_H = string("../mopsi_gravitation/Datas/verlet_H.txt");
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     ofstream fichier_H(file_name_H.c_str(), ios::out|ios::trunc);
+
+    string file_name_H_modifie = string("../mopsi_gravitation/Datas/verlet_H_modifie.txt");
+    ofstream fichier_H_modifie(file_name_H_modifie.c_str(), ios::out|ios::trunc);
     if (fichier){
         if(ecriture){
             cout <<"calcul des trajectoires"<<endl;
@@ -533,10 +547,14 @@ void verlet(double h,bool ecriture){
             fichier << endl;
             fichier_H << H(q,p);
             fichier_H << endl;
+            fichier_H_modifie << H(q,p) + h*h*H_modifie_V(q,p);
             }
+            p0=p;
+            q0=q;
         }
         fichier.close();
         fichier_H.close();
+        fichier_H_modifie.close();
     }
     else{
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
