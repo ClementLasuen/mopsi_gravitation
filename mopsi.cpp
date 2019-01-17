@@ -134,12 +134,12 @@ double ecart(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double
 
 // Euler explicite
 
-FVector<FVector<double,3>,nb_planetes>* euler_explicite(double h, bool ecriture){//,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+void euler_explicite(double h, bool ecriture){//,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
 
     // --------------------------------- Initialistation ---------------------------------------------------------
 
-    FVector<FVector<double,3>,nb_planetes> p0;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
-    FVector<FVector<double,3>,nb_planetes> q0;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
+    FVector<FVector<double,3>,nb_planetes> p0;
+    FVector<FVector<double,3>,nb_planetes> q0;
 
     q0[0]=q_soleil;
     q0[1]=q_jupiter;
@@ -153,7 +153,8 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(double h, bool ecriture)
     p0[3]=p_uranus;
     p0[4]=p_neptune;
 
-
+    FVector<FVector<double,3>,nb_planetes> q;
+    FVector<FVector<double,3>,nb_planetes> p;
 
     //-------------------------------------------------------------------------------------------------------------
     string file_name = string("../mopsi_gravitation/Datas/euler_explicite.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
@@ -169,34 +170,41 @@ FVector<FVector<double,3>,nb_planetes>* euler_explicite(double h, bool ecriture)
                 fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j] << " "; // On ecrit les conditions initiales
             fichier << endl;
         }
-        FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
+        /*FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
         resu[0]=q0;
-        resu[nb_iterations]=p0;
+        resu[nb_iterations]=p0;*/
 
         for(int i=1;i<nb_iterations;i++){
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
-            FVector<FVector<double,3>,nb_planetes>* resu_ = new FVector<FVector<double,3>,nb_planetes> [2];
+            /*FVector<FVector<double,3>,nb_planetes>* resu_ = new FVector<FVector<double,3>,nb_planetes> [2];
             for(int j=0;j<nb_planetes;j++){
                 resu_[0][j] = resu[i-1][j];
                 resu_[1][j] = resu[nb_iterations+i-1][j];
             }
-            FVector<FVector<double,3>,nb_planetes> p_point = interaction(resu_[0]);
+            FVector<FVector<double,3>,nb_planetes> p_point = interaction(resu_[0]);*/
+            FVector<FVector<double,3>,nb_planetes> p_point = interaction(q0);
             for(int j=0;j<nb_planetes;j++){
-                resu_[0][j] = resu_[0][j] + h*resu_[1][j]/m[j];
-                resu_[1][j] = resu_[1][j] + h*p_point[j];
+                /*resu_[0][j] = resu_[0][j] + h*resu_[1][j]/m[j];
+                resu_[1][j] = resu_[1][j] + h*p_point[j];*/
+                q[j] += h*p0[j]/m[j];
+                p[j] += h*p_point[j];
             }
-            resu[i] = resu_[0];
-            resu[nb_iterations+i] = resu_[1];
+
+            /*resu[i] = resu_[0];
+            resu[nb_iterations+i] = resu_[1];*/
             if(ecriture){
                 for(int j=0;j<nb_planetes;j++)
-                    fichier << resu_[0][j][0] << " " << resu_[0][j][1] << " " << resu_[0][j][2] << " " << resu_[1][j][0]/m[j] << " " << resu_[1][j][1]/m[j] << " " << resu_[1][j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
+                    fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
             fichier << endl;
             }
-            delete[] resu_;
+            p0=p;
+            q0=q;
+
+            //delete[] resu_;
         }
         fichier.close();
-        return resu;
+        //return resu;
     }
     else{
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
