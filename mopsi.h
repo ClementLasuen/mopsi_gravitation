@@ -62,7 +62,7 @@ FVector<FVector<double,3>,nb_planetes>* pf_euler_symplectique(double h,FVector<F
 
 FVector<FVector<double,3>,nb_planetes>* euler_symplectique(double h, bool ecriture = true);
 
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique_sans_pf(double h, bool ecriture = true);
+void euler_symplectique_sans_pf(double h, bool ecriture = true);
 
 
 // Verlet
