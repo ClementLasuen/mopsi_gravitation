@@ -28,6 +28,11 @@ double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_
 double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p);
 double H_modifie_V(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p);
 
+
+// Calcul de la Hessienne par differences finies
+FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne2(FVector<FVector<double, 3>, nb_planetes> q);
+
+
 FVector<FVector<double, 3*nb_planetes>,3*nb_planetes >  Hessienne(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p);
 //---------------------------------- Methodes d'integration -------------------------------------------
 
