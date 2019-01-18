@@ -121,6 +121,42 @@ FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne(FVector<FVector
     return result;
 }
 
+FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne2(FVector<FVector<double, 3>, nb_planetes> q){
+    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > result;
+
+
+    double epsilon = 0.000001;
+    FVector<FVector<double, 3>, nb_planetes> q_plus_epsilon_kj;
+    FVector<FVector<double, 3>, nb_planetes> q_moins_epsilon_kj;
+
+
+    FVector<FVector<double, 3>, nb_planetes> grad_plus_epsilon;
+    FVector<FVector<double, 3>, nb_planetes> grad_moins_epsilon;
+
+    for(int i =0;i <nb_planetes;i++){
+        for(int j=0;j<nb_planetes;j++){
+            for(int coord_i =0; coord_i<3;coord_i ++){
+                for(int coord_j=0;coord_j<3;coord_j++){
+
+                    q_plus_epsilon_kj = q;
+                    q_moins_epsilon_kj=q;
+
+                    q_plus_epsilon_kj[j][coord_j] += epsilon;
+                    grad_plus_epsilon = interaction(q_plus_epsilon_kj);
+
+                    q_moins_epsilon_kj[j][coord_j] -= epsilon;
+                    grad_moins_epsilon = interaction(q_moins_epsilon_kj);
+
+
+                    result[i*3 + coord_i][j*3 + coord_j] = -(grad_plus_epsilon[i][coord_i] - grad_moins_epsilon[i][coord_i])/(2*epsilon);
+                }
+            }
+        }
+    }
+    return result;
+
+}
+
 // ------------------------------------------Methodes d'integration------------------------------
 
 double ecart(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double,3>, nb_planetes> q1){
