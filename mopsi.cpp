@@ -76,6 +76,18 @@ double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<d
 
 }
 
+double egalite_hessiennes(FVector<FVector<double, 3>, nb_planetes> q){
+    double resu=0;
+    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > H1 = Hessienne(q);
+    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > H2 = Hessienne2(q);
+    for(int i=0;i<nb_planetes*3;i++){
+        for(int j=0;j<3*nb_planetes;j++){
+            resu += (H1[i][j] - H2[i][j])*(H1[i][j] - H2[i][j]);
+        }
+    }
+    return resu;
+}
+
 
 // Calcul la hessienne du potentiel selon q
 
