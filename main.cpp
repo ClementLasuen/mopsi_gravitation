@@ -5,71 +5,26 @@
 
 int main()
 {
-    // Initialisation
+        double h;
+    string methode;
 
-    // Soleil
-    FVector<double,3> q_soleil = {0.0,0.0,0.0};
-    FVector<double,3> p_soleil = {0.0,0.0,0.0};
-
-    // Jupiter
-
-    FVector<double,3> q_jupiter = {-3.5024 , -3.8170 , -1.5508};
-    FVector<double,3> p_jupiter = {0.0056543 , -0.0041249, -0.0019059};
-    p_jupiter = m[1]*p_jupiter;
-
-    // Saturne
-
-    FVector<double,3> q_saturne = {9.1,-3.0,-1.6};
-    FVector<double,3> p_saturne = {0.0017, 0.0048,0.0019};
-    p_saturne = m[2]*p_saturne;
-
-    // Uranus
-    FVector<double,3> q_uranus = {8.3101, -16.290, -7.2521};
-    FVector<double,3> p_uranus = {0.0035418, 0.0013710, 0.00055029};
-    p_uranus = m[3]*p_uranus;
-    // Neptune
-
-    FVector<double,3> q_neptune = {-15.539, -25.223, -3.1902};
-    FVector<double,3> p_neptune = {0.0028893, -0.0017070, -0.0013650};
-    p_neptune = m[4]*p_neptune;
-
-    FVector<FVector<double,3>,nb_planetes> p;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
-    FVector<FVector<double,3>,nb_planetes> q;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
-
-    q[0]=q_soleil;
-    q[1]=q_jupiter;
-    q[2]=q_saturne;
-    q[3]=q_uranus;
-    q[4]=q_neptune;
-
-    p[0]=p_soleil;
-    p[1]=p_jupiter;
-    p[2]=p_saturne;
-    p[3]=p_uranus;
-    p[4]=p_neptune;
-
-    double h = 100;
-
-    FVector<FVector<double,3>,nb_planetes>* resu = verlet(h,q,p);
+    cout << "Quel est le pas de temps ? " << endl;
+    cin >> h ;
 
 
-    // ------------ ecriture de H -----------
-
-    ofstream valeur_H("../mopsi_gravitation/Datas/test_h_tot_ES_sspf.txt", ios::out|ios::trunc );
-    if(valeur_H){
-        cout << "calcul de l'hamiltonien" << endl;
-        for(int i =0; i<nb_iterations-1;i++){
-            if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
-                cout << int(i/int(nb_iterations/100)) << endl;
-            double hamiltonien =  H(resu[i],resu[i+nb_iterations]) + h*h*H_modifie_V(resu[i],resu[i+nb_iterations]);
-            valeur_H <<  hamiltonien  << endl;
-        }
+    cout << "Quelle methode numerique a utiliser ?" << endl;
+    cout << "explicite, implicite, symplectique1,  symplectique2, Verlet" << endl;
+    cin >> methode ;
+    //FVector<FVector<double,3>,nb_planetes>* resu;
+    bool choix_methode = true;
+    if(methode == "explicite")  euler_explicite(h);
+    /*else if(methode == "implicite")  resu = euler_implicite(h);
+    else if(methode == "symplectique1")  resu = euler_symplectique(h);*/
+    else if(methode == "symplectique2") euler_symplectique_sans_pf(h);
+    else if(methode == "Verlet")  verlet(h);
+    else{
+        choix_methode=false;
+        cout << "choisis une methode" << endl;
     }
-    else cout << "pb ouverture" << endl;
-
-    Py_Initialize();
-
-    Py_Finalize();
-
     return 0;
 }
