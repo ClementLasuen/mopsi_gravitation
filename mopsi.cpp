@@ -61,7 +61,7 @@ double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<d
 
     // Calcul de la Hessienne
 
-    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > hess = Hessienne(q,p);
+    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > hess = Hessienne(p);
     for(int i=0;i<nb_planetes;i++){
         for(int j=0;j<nb_planetes;j++){
             for(int k=0;k<3;k++){
@@ -605,7 +605,7 @@ void verlet(double h,bool ecriture){
             fichier_H << hamiltonien;
 
             fichier_H << endl;
-            fichier_H_modifie << hamiltonien - h*h*H_modifie_V(q,p);
+            fichier_H_modifie << hamiltonien + h*h*H_modifie_V(q,p);
             changement_variables(p);
             fichier_H_modifie << endl;
             }

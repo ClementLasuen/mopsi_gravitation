@@ -1,4 +1,3 @@
-
 #include "mopsi.h"
 #include</home/quentin/anaconda3/include/python3.5m/Python.h>
 
@@ -26,5 +25,11 @@ int main()
         choix_methode=false;
         cout << "choisis une methode" << endl;
     }
+
+    /*
+    Py_Initialize();
+    Py_Finalize();
+    */
+
     return 0;
 }
