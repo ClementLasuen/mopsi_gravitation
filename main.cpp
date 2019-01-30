@@ -31,9 +31,8 @@ int main(){
     Py_Finalize();
     */
 
-    system("pwd");
-
-    system("python ../mopsi_gravitation/interface_graph.py");
+    system("cd ../mopsi_gravitation;python -c 'from func import *;nb_iterations, nb_planetes,positions,vitesses = get_data();enhanced_plot(nb_iterations, nb_planetes,positions,vitesses)'");
 
     return 0;
+
 }

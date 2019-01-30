@@ -14,9 +14,9 @@ from mpl_toolkits.mplot3d import Axes3D
 from vpython import *
 
 
-def get_data(file_path):
+def get_data(file_path = "Datas/coord.txt"):
     # Lit le fichier C++ avec les données
-    path = "/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/"+file_path
+    path = file_path
     # prend le fichier renvoyé par le code C++ pour une trajectoire
     # renvoie le nombre d'iteration, le nombre de planetes, la liste des position de toutes les planetes a chaque temps, la liste des vitesses de toutes les planetes a chaque temps
     with open(path) as datas:
@@ -45,11 +45,11 @@ def plot_H(nb_iterations, file_name, file_name_modifie):
     # Lit le fichier C++ avec les valeurs de H, et les affiches
     resu=[]
     resu1=[]
-    with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/"+file_name) as f:
+    with open("Datas/"+file_name) as f:
         for i in range(nb_iterations-1):
             texte = f.readline()
             resu.append(float(texte))
-    with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/"+file_name_modifie) as f1:
+    with open("Datas/"+file_name_modifie) as f1:
         for i in range(nb_iterations-1):
             texte = f1.readline()
             resu1.append(float(texte))

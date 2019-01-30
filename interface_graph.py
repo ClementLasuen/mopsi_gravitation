@@ -51,7 +51,7 @@ class cas_tests(unittest.TestCase):
 
 #%%
              
-file_path = "Datas/euler_symplectique_sans_pf.txt"
+file_path = "Datas/coord.txt"
 
 nb_iterations, nb_planetes,positions,vitesses = get_data(file_path)
 
