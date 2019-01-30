@@ -51,23 +51,20 @@ double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<do
 // Hamiltonien modifié pour Verlet / il s'agit de H3 (voir article) -> *h² pour H
 
 double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<double, 3>, nb_planetes> p){
-    double resu = 0;
+    double resu = 0.0;
     FVector<FVector<double, 3>, nb_planetes> delta_V = interaction(q);
+    //changement_variables(delta_V);
     for(int i=0;i<nb_planetes;i++){
-        for(int j=0;j<3;j++){
-            resu += delta_V[i][j]*delta_V[i][j]/24;
-        }
+        for(int j=0;j<3;j++)   resu += delta_V[i][j]*delta_V[i][j]/24.0;
     }
 
     // Calcul de la Hessienne
 
-    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > hess = Hessienne(q,p);
+    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > hess = Hessienne2(q);
     for(int i=0;i<nb_planetes;i++){
         for(int j=0;j<nb_planetes;j++){
-            for(int k=0;k<3;k++){
-                for(int l=0;l<3;l++){
-                    resu +=  p[j][k]*hess[j*3 + k][i*3+l]*p[i][l] /12;
-                }
+            for(int k=0;k<3;k++){ // J ESSAI 24 ET PAS 12
+                for(int l=0;l<3;l++) resu +=  p[j][k]*hess[j*3 + k][i*3+l]*p[i][l] /12.0;
             }
         }
     }
@@ -85,7 +82,7 @@ double egalite_hessiennes(FVector<FVector<double, 3>, nb_planetes> q){
             resu += (H1[i][j] - H2[i][j])*(H1[i][j] - H2[i][j]);
         }
     }
-    return resu;
+    return sqrt(resu);
 }
 
 
@@ -138,7 +135,7 @@ FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne2(FVector<FVecto
     FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > result;
 
 
-    double epsilon = 0.000001;
+    double epsilon = 0.01;
     FVector<FVector<double, 3>, nb_planetes> q_plus_epsilon_kj;
     FVector<FVector<double, 3>, nb_planetes> q_moins_epsilon_kj;
 
@@ -152,7 +149,7 @@ FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne2(FVector<FVecto
                 for(int coord_j=0;coord_j<3;coord_j++){
 
                     q_plus_epsilon_kj = q;
-                    q_moins_epsilon_kj=q;
+                    q_moins_epsilon_kj = q;
 
                     q_plus_epsilon_kj[j][coord_j] += epsilon;
                     grad_plus_epsilon = interaction(q_plus_epsilon_kj);
@@ -161,7 +158,7 @@ FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne2(FVector<FVecto
                     grad_moins_epsilon = interaction(q_moins_epsilon_kj);
 
 
-                    result[i*3 + coord_i][j*3 + coord_j] = -(grad_plus_epsilon[i][coord_i] - grad_moins_epsilon[i][coord_i])/(2*epsilon);
+                    result[i*3 + coord_i][j*3 + coord_j] = -(grad_plus_epsilon[i][coord_i]/epsilon - grad_moins_epsilon[i][coord_i]/epsilon)/2.0;
                 }
             }
         }
@@ -205,11 +202,12 @@ void euler_explicite(double h, bool ecriture){
 
 
     //-------------------------------------------------------------------------------------------------------------
-    string file_name = string("../mopsi_gravitation/Datas/euler_explicite.txt");
+    string file_name = string("../mopsi_gravitation/Datas/coord.txt");
     //+string<int>(nb_iterations)+string("_")+string<int>(h);
-    string file_name_H = string("../mopsi_gravitation/Datas/euler_explicite_H.txt");
+    string file_name_H = string("../mopsi_gravitation/Datas/H.txt");
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc);
     ofstream fichier_H(file_name_H.c_str(), ios::out|ios::trunc);// On va ecrire a la fin du fichier
+
     if (fichier){
         if(ecriture){
             cout <<"calcul des trajectoires"<<endl;
@@ -217,8 +215,10 @@ void euler_explicite(double h, bool ecriture){
             for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
                 fichier << m[j]<<" ";
             fichier <<endl;
-            for(int j=0;j<nb_planetes;j++)
+            for(int j=0;j<nb_planetes;j++){
                 fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j] << " "; // On ecrit les conditions initiales
+
+            }
             fichier << endl;
         }
 
@@ -235,11 +235,13 @@ void euler_explicite(double h, bool ecriture){
             }
 
             if(ecriture){
-                for(int j=0;j<nb_planetes;j++)
+                for(int j=0;j<nb_planetes;j++){
                     fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
+            }
             fichier << endl;
             fichier_H << H(q,p);
             fichier_H << endl;
+
             }
             p0=p;
             q0=q;
@@ -350,94 +352,7 @@ FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h, bool ecriture)
 
 // Euler symplectique (implicite sur q, explicite sur p)
 
-FVector<FVector<double, 3>, nb_planetes> *pf_euler_symplectique(double h,FVector<FVector<double, 3>, nb_planetes> qn, FVector<FVector<double, 3>, nb_planetes> pn ){
-    double epsilon = 0.0001; // precision Comment choisir epsilon ?
-    int compteur =0;
-    FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2];
-    FVector<FVector<double,3>,nb_planetes> q0,q1,p0,p1;
-    for(int i =0;i<nb_planetes;i++){
-            q0[i] = qn[i];
-            p0[i] = pn[i];
-            q1[i] = qn[i] + h*pn[i]/m[i];
-            p1[i] = pn[i] + h*interaction(q0)[i];
-    }
-    while( compteur<1000 && max(ecart(q0,q1),ecart(p0,p1))> epsilon ){
-        compteur+=1;
-        for(int i =0;i<nb_planetes;i++){
-                q0[i] = q1[i];
-                p0[i] = p1[i];
-                q1[i] = qn[i] + h*pn[i]/m[i];
-                p1[i] = pn[i] + h*interaction(q0)[i];
-        }
-    }
-    resu[0] = q1;
-    resu[1] = p1;
-    return resu;
-}
-
-FVector<FVector<double, 3>, nb_planetes> *euler_symplectique(double h, bool ecriture){//,FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double, 3>, nb_planetes> p0, bool ecriture){
-
-    // --------------------------------- Initialistation ---------------------------------------------------------
-
-    FVector<FVector<double,3>,nb_planetes> p0;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
-    FVector<FVector<double,3>,nb_planetes> q0;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
-
-    q0[0]=q_soleil;
-    q0[1]=q_jupiter;
-    q0[2]=q_saturne;
-    q0[3]=q_uranus;
-    q0[4]=q_neptune;
-
-    p0[0]=p_soleil;
-    p0[1]=p_jupiter;
-    p0[2]=p_saturne;
-    p0[3]=p_uranus;
-    p0[4]=p_neptune;
-
-
-
-    //-------------------------------------------------------------------------------------------------------------
-
-    string file_name = string("../mopsi_gravitation/Datas/euler_symplectique.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
-    ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
-    if (fichier){
-        if(ecriture){
-            cout <<"calcul des trajectoires"<<endl;
-            fichier << nb_iterations <<" "<<nb_planetes<<endl; // On ecrit les donnees
-            for(int j=0;j<nb_planetes;j++) // On ecrit la ligne avec les masses
-                fichier << m[j]<<" ";
-            fichier <<endl;
-            for(int j=0;j<nb_planetes;j++)
-                fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j] << " "; // On ecrit les conditions initiales
-            fichier << endl;
-        }
-        FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
-        resu[0]=q0;
-        resu[nb_iterations]=p0;
-        for(int i =1;i<nb_iterations;i++){
-            if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
-                cout << int(i/int(nb_iterations/100)) << endl;
-            FVector<FVector<double,3>,nb_planetes>* resu_ = new FVector<FVector<double,3>,nb_planetes> [2];
-            resu_ = pf_euler_symplectique(h,resu[i-1],resu[nb_iterations + i-1]);
-            resu[i] = resu_[0];
-            resu[nb_iterations+i] = resu_[1];
-            if(ecriture){
-                for(int j=0;j<nb_planetes;j++)
-                    fichier << resu[i][j][0] << " " << resu[i][j][1] << " " << resu[i][j][2] << " " << resu[nb_iterations+i][j][0]/m[j] << " " << resu[nb_iterations+i][j][1]/m[j] << " " << resu[nb_iterations+i][j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
-            fichier << endl;
-            }
-            delete[] resu_;
-        }
-        return resu;
-    }
-    else{
-        cerr<<"Impossible d'ouvrir le fichier"<<endl;
-    }
-}
-
-//Euler smplectique inverse
-
-void euler_symplectique_sans_pf(double h, bool ecriture){
+void euler_symplectique(double h, bool ecriture){
 
     // --------------------------------- Initialistation ---------------------------------------------------------
 
@@ -460,13 +375,15 @@ void euler_symplectique_sans_pf(double h, bool ecriture){
 
     //-------------------------------------------------------------------------------------------------------------
 
-    string file_name = string("../mopsi_gravitation/Datas/euler_symplectique_sans_pf.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
-    string file_name_H = string("../mopsi_gravitation/Datas/euler_symplectique_sans_pf_H.txt");
+    string file_name = string("../mopsi_gravitation/Datas/coord.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
+    string file_name_H = string("../mopsi_gravitation/Datas/H.txt");
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     ofstream fichier_H(file_name_H.c_str(), ios::out|ios::trunc);
 
-    string file_name_H_modifie = string("../mopsi_gravitation/Datas/euler_symplectique_sans_pf_H_modifie.txt");
+    string file_name_H_modifie = string("../mopsi_gravitation/Datas/H_modifie.txt");
     ofstream fichier_H_modifie(file_name_H_modifie.c_str(), ios::out|ios::trunc);
+
+
     if (fichier){
         if(ecriture){
             cout <<"calcul des trajectoires"<<endl;
@@ -514,17 +431,13 @@ void euler_symplectique_sans_pf(double h, bool ecriture){
 // Verlet
 
 void changement_variables(FVector<FVector<double, 3>, nb_planetes> &p){
-    FVector<FVector<double,3>,nb_planetes> p_ = p;
-    for(int i=0;i<nb_planetes;i++){
-        p[i]= p_[i]/m[i];
-    }
+    //FVector<FVector<double,3>,nb_planetes> p_ = p;
+    for(int i=0;i<nb_planetes;i++) p[i]= p[i]/m[i];
 }
 
 void changement_variables_inverse(FVector<FVector<double, 3>, nb_planetes> &p){
-    FVector<FVector<double,3>,nb_planetes> p_ = p;
-    for(int i=0;i<nb_planetes;i++){
-        p[i]= p_[i]*m[i];
-    }
+    //FVector<FVector<double,3>,nb_planetes> p_ = p;
+    for(int i=0;i<nb_planetes;i++) p[i]= p[i]*m[i];
 }
 
 void verlet(double h,bool ecriture){
@@ -547,18 +460,15 @@ void verlet(double h,bool ecriture){
 
     p = p0;
     q = q0;
-
-
-    double hamiltonien;
     //-------------------------------------------------------------------------------------------------------------
 
-    string file_name = string("../mopsi_gravitation/Datas/verlet.txt");
+    string file_name = string("../mopsi_gravitation/Datas/coord.txt");
     //+string<int>(nb_iterations)+string("_")+string<int>(h);
-    string file_name_H = string("../mopsi_gravitation/Datas/verlet_H.txt");
+    string file_name_H = string("../mopsi_gravitation/Datas/H.txt");
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
     ofstream fichier_H(file_name_H.c_str(), ios::out|ios::trunc);
 
-    string file_name_H_modifie = string("../mopsi_gravitation/Datas/verlet_H_modifie.txt");
+    string file_name_H_modifie = string("../mopsi_gravitation/Datas/H_modifie.txt");
     ofstream fichier_H_modifie(file_name_H_modifie.c_str(), ios::out|ios::trunc);
     if (fichier){
         if(ecriture){
@@ -600,12 +510,12 @@ void verlet(double h,bool ecriture){
             fichier << endl;
 
             changement_variables_inverse(p);
-            hamiltonien = H(q,p);
 
-            fichier_H << hamiltonien;
+            fichier_H << H(q,p);
 
             fichier_H << endl;
-            fichier_H_modifie << hamiltonien - h*h*H_modifie_V(q,p);
+            fichier_H_modifie << H_modifie_V(q,p);
+            //fichier_H_modifie << egalite_hessiennes(q);
             changement_variables(p);
             fichier_H_modifie << endl;
             }
@@ -620,3 +530,6 @@ void verlet(double h,bool ecriture){
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
     }
 }
+
+
+
