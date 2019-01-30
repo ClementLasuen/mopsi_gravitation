@@ -31,7 +31,9 @@ int main(){
     Py_Finalize();
     */
 
-    //system(".\python3.4 test_hess.py");
+    system("pwd");
+
+    system("python ../mopsi_gravitation/interface_graph.py");
 
     return 0;
 }

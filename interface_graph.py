@@ -6,6 +6,8 @@ Ceci est un script temporaire.
 """
 from func import *
 
+#%%
+
 ######################################### TEEEEEEEEST !!!!!!!!
 
 def norme(q):
@@ -28,6 +30,7 @@ def H(q,v):
     
     
 import unittest
+
 class cas_tests(unittest.TestCase):
    
      def test_BOUNDED(self,verlet):
@@ -39,9 +42,9 @@ class cas_tests(unittest.TestCase):
          for i in range(nb_iterations) :
              self.assertTrue(abs(H(position[i,:,:],vitesses[i,:,:])) <= h*C)
 
-#    
-# if __name__ == "__main__":
-#     unittest.main()
+    
+#if __name__ == "__main__":
+#    unittest.main()
 
 ######################################################################################"
 

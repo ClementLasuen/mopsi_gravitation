@@ -517,7 +517,7 @@ void verlet(double h,bool ecriture){
             fichier_H << H(q,p);
 
             fichier_H << endl;
-            fichier_H_modifie << hamiltonien + h*h*H_modifie_V(q,p);
+            fichier_H_modifie << H(q,p) + h*h*H_modifie_V(q,p);
             changement_variables(p);
             fichier_H_modifie << endl;
             }

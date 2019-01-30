@@ -14,7 +14,6 @@ from mpl_toolkits.mplot3d import Axes3D
 from vpython import *
 
 
-
 def get_data(file_path):
     # Lit le fichier C++ avec les données
     path = "/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/"+file_path
@@ -42,17 +41,22 @@ def get_data(file_path):
                 vitesses[i,j,2] = float(coordonnees[6*j+5])
         return(nb_iterations,nb_planetes,positions,vitesses)
         
-def plot_H(nb_iterations, file_name):
+def plot_H(nb_iterations, file_name, file_name_modifie):
     # Lit le fichier C++ avec les valeurs de H, et les affiches
     resu=[]
+    resu1=[]
     with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/"+file_name) as f:
         for i in range(nb_iterations-1):
             texte = f.readline()
             resu.append(float(texte))
-    print(len(resu))
+    with open("/media/OS/Users/Quentin/Documents/ENPC/2A/MOPSI/mopsi_gravitation/Datas/"+file_name_modifie) as f1:
+        for i in range(nb_iterations-1):
+            texte = f1.readline()
+            resu1.append(float(texte))
     X=[i for i in range(nb_iterations-1)]
     plt.figure()
     plt.plot(X,resu)
+    plt.plot(X,resu1)
     plt.show()
     return()
     
@@ -69,9 +73,9 @@ def first_plot(nb_iterations, nb_planetes, positions):
     
 #affichage avancé
     
-def enhanced_plot(nb_iterations, nb_planetes, positions, vitesses):
+pause_var = False
     
-    pause_var = False
+def enhanced_plot(nb_iterations, nb_planetes, positions, vitesses):
     
     scene.title = "Enhanced 3D of surfaces using bump maps"
     scene.caption = "Drag the single light with the left button, rotate with the right button. \n\n"
@@ -123,8 +127,6 @@ def enhanced_plot(nb_iterations, nb_planetes, positions, vitesses):
     def pause():
         global pause_var
         pause_var = not pause_var
-        button( bind=pause, text='Play/Pause' )
-        scene.append_to_caption('')
         return()
         
     i = 0
@@ -135,7 +137,10 @@ def enhanced_plot(nb_iterations, nb_planetes, positions, vitesses):
         value+=1
         return()
     
+    
     s = slider(bind = rate_modif,min=1, max=150, value=20)
+    scene.append_to_caption('')
+    b = button(bind = pause, action = pause, text='play/pause')
 
     while i<nb_iterations:
         
