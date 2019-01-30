@@ -14,11 +14,13 @@ int main(){
 
     cout << "Quelle methode numerique a utiliser ?" << endl;
     //cout << "explicite, implicite, symplectique1,  symplectique2, Verlet" << endl;
-    cout << "ES ou V" << endl;
+    cout << "EE, ES, EI ou V" << endl;
     cin >> methode ;
     //FVector<FVector<double,3>,nb_planetes>* resu;
     bool choix_methode = true;
     if(methode == "ES") euler_symplectique(h);
+    else if(methode == "EE") euler_explicite(h);
+    else if(methode == "EI") euler_implicite(h);
     else if(methode == "V")  verlet(h);
     else{
         choix_methode=false;
