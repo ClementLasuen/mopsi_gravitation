@@ -288,13 +288,12 @@ FVector<FVector<double, 3>, nb_planetes> *pf_euler_implicite(double h,FVector<FV
     return resu;
 }
 
-FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h, bool ecriture){//,FVector<FVector<double,3>,nb_planetes> q0, FVector<FVector<double,3>,nb_planetes> p0, bool ecriture){
+void euler_implicite(double h, bool ecriture){
 
 
     // --------------------------------- Initialistation ---------------------------------------------------------
 
-    FVector<FVector<double,3>,nb_planetes> p0;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
-    FVector<FVector<double,3>,nb_planetes> q0;// = {q_soleil,q_jupiter, q_saturne, q_uranus, q_neptune};
+    FVector<FVector<double,3>,nb_planetes> p0,q0,p,q;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
 
     q0[0]=q_soleil;
     q0[1]=q_jupiter;
@@ -309,11 +308,16 @@ FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h, bool ecriture)
     p0[4]=p_neptune;
 
 
-
+    p=p0;
+    q=q0;
     //-------------------------------------------------------------------------------------------------------------
 
-    string file_name = string("../mopsi_gravitation/Datas/euler_implicite.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
+    string file_name = string("../mopsi_gravitation/Datas/coord.txt"); //+string<int>(nb_iterations)+string("_")+string<int>(h);
     ofstream fichier(file_name.c_str(), ios::out|ios::trunc); // On va ecrire a la fin du fichier
+
+    string file_name_H = string("../mopsi_gravitation/Datas/H.txt");
+    ofstream fichier_H(file_name_H.c_str(), ios::out|ios::trunc);// On va ecrire a la fin du fichier
+
     if (fichier){
         if(ecriture){
             cout <<"calcul des trajectoires"<<endl;
@@ -325,25 +329,24 @@ FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h, bool ecriture)
                 fichier << q0[j][0] << " " << q0[j][1] << " " << q0[j][2] << " " << p0[j][0]/m[j] << " " << p0[j][1]/m[j] << " " << p0[j][2]/m[j] << " "; // On ecrit les conditions initiales
             fichier << endl;
         }
-        FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2*nb_iterations];
-        // resu[i] donne les positions de toutes les planètes à l'iteration i;
-        // resu[i + nb_iterations] donne les quantites de mouvement
-        resu[0]=q0;
-        resu[nb_iterations]=p0;
+
         FVector<FVector<double,3>,nb_planetes>* point_fixe = new FVector<FVector<double,3>,nb_planetes> [2];
         for(int i =1;i<nb_iterations;i++){
             if (i%(nb_iterations/100)==0)               // On affiche l'avancée de l'ecriture
                 cout << int(i/int(nb_iterations/100)) << endl;
-            point_fixe = pf_euler_implicite(h,resu[i-1],resu[i-1 + nb_iterations]);
-            resu[i] = point_fixe[0];
-            resu[nb_iterations+i] = point_fixe[1];
+            point_fixe = pf_euler_implicite(h,q,p);
+            q = point_fixe[0];
+            p = point_fixe[1];
+
+
             if(ecriture){
                 for(int j=0;j<nb_planetes;j++)
-                    fichier << resu[i][j][0] << " " << resu[i][j][1] << " " << resu[i][j][2] << " " << resu[nb_iterations+i][j][0]/m[j] << " " << resu[nb_iterations+i][j][1]/m[j] << " " << resu[nb_iterations+i][j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
+                    fichier << q[j][0] << " " << q[j][1] << " " << q[j][2] << " " << p[j][0]/m[j] << " " << p[j][1]/m[j] << " " << p[j][2]/m[j]<< " "; // On ecrit les positions puis vitesses d'une planete
             fichier << endl;
             }
+        fichier_H << H(q,p);
+        fichier_H << endl;
         }
-        return resu;
     }
     else{
         cerr<<"Impossible d'ouvrir le fichier"<<endl;
