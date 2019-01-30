@@ -9,8 +9,7 @@ using namespace std;
 using namespace Imagine;
 
 const int nb_planetes =5;
-//const double h = 1;
-const int nb_iterations = 200000;
+const int nb_iterations = 10000;
 const double m [nb_planetes] = {1.00000597682,0.0009548, 0.00029, 0.0000437, 0.0000518};
 const double G =2.959122*0.0001;
 
@@ -43,6 +42,8 @@ const FVector<double,3> p_uranus = m[3]*p_uranus1;
 const FVector<double,3> q_neptune = {-15.539, -25.223, -3.1902};
 const FVector<double,3> p_neptune1 = {0.0028893, -0.0017070, -0.0013650};
 const FVector<double,3> p_neptune = m[4]*p_neptune1;
+
+
 // ------------------------------------------- Fonctions pratiques ----------------------------------------
 
 double norme(FVector<double,3> v);
@@ -57,12 +58,11 @@ double H(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_
 double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p);
 double H_modifie_V(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<double,3>,nb_planetes> p);
 
+FVector<FVector<double, 3*nb_planetes>,3*nb_planetes >  Hessienne(FVector<FVector<double,3>,nb_planetes> q);
 
 // Calcul de la Hessienne par differences finies
 FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne2(FVector<FVector<double, 3>, nb_planetes> q);
 
-
-FVector<FVector<double, 3*nb_planetes>,3*nb_planetes >  Hessienne(FVector<FVector<double,3>,nb_planetes> q);
 //---------------------------------- Methodes d'integration -------------------------------------------
 
 // Renvoie une "distance" entre les positions q0 et q1
@@ -88,15 +88,11 @@ FVector<FVector<double,3>,nb_planetes>* pf_euler_implicite(double h,FVector<FVec
 */
 
 // Renvoie l'ensemble des positions et des quantités de mouvement
-FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h, bool ecriture = true);
+void euler_implicite(double h, bool ecriture = true);
 
 // Euler symplectique
 
-FVector<FVector<double,3>,nb_planetes>* pf_euler_symplectique(double h,FVector<FVector<double,3>,nb_planetes> qn, FVector<FVector<double,3>,nb_planetes> pn );
-
-FVector<FVector<double,3>,nb_planetes>* euler_symplectique(double h, bool ecriture = true);
-
-void euler_symplectique_sans_pf(double h, bool ecriture = true);
+void euler_symplectique(double h, bool ecriture = true);
 
 
 // Verlet
@@ -104,4 +100,5 @@ void euler_symplectique_sans_pf(double h, bool ecriture = true);
 void changement_variables(FVector<FVector<double,3>,nb_planetes> &p);
 
 void changement_variables_inverse(FVector<FVector<double,3>,nb_planetes> &p);
+
 void verlet(double h, bool ecriture = true);
