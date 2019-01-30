@@ -88,7 +88,7 @@ FVector<FVector<double,3>,nb_planetes>* pf_euler_implicite(double h,FVector<FVec
 */
 
 // Renvoie l'ensemble des positions et des quantités de mouvement
-FVector<FVector<double,3>,nb_planetes>* euler_implicite(double h, bool ecriture = true);
+void euler_implicite(double h, bool ecriture = true);
 
 // Euler symplectique
 
