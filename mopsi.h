@@ -102,3 +102,10 @@ void changement_variables(FVector<FVector<double,3>,nb_planetes> &p);
 void changement_variables_inverse(FVector<FVector<double,3>,nb_planetes> &p);
 
 void verlet(double h, bool ecriture = true);
+
+// Differences finies
+// Le potentiel est noté V
+
+double V (FVector<FVector<double, 3>, nb_planetes> q);
+FVector<FVector<double,3>,nb_planetes> dV (FVector<FVector<double,3>,nb_planetes> q);
+FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > d2V (FVector<FVector<double,3>,nb_planetes> q);
