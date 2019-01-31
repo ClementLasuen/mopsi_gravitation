@@ -533,5 +533,55 @@ void verlet(double h,bool ecriture){
     }
 }
 
+// Calcul du gradient et de la Hessienne en differences finies
+
+double V(FVector<FVector<double, 3>, nb_planetes> q){
+    double resu = 0.0;
+    for(int i =0;i<nb_planetes;i++){
+        for(int j=0;j<i;j++) resu -= G*m[i]*m[j]/norme(q[i]-q[j]);
+    }
+    return resu;
+}
+
+FVector<FVector<double, 3>, nb_planetes> dV(FVector<FVector<double, 3>, nb_planetes> q){
+    double epsilon = 0.00001;
+    FVector<FVector<double, 3>, nb_planetes> grad , q_plus_epsilon , q_moins_epsilon ;
+
+    for(int i=0;i<nb_planetes;i++){
+        for(int coord = 0;coord<3;coord++){
+            q_plus_epsilon = q;
+            q_moins_epsilon = q;
+            q_plus_epsilon[i][coord] += epsilon;
+            q_moins_epsilon[i][coord] -= epsilon;
+
+            grad[i][coord] = (V(q_plus_epsilon)/epsilon - V(q_moins_epsilon)/epsilon)/2.0;
+        }
+    }
+    return grad;
+}
+
+FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > d2V(FVector<FVector<double, 3>, nb_planetes> q){
+    double epsilon = 0.00001;
+    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > resu;
+
+    FVector<FVector<double, 3>, nb_planetes> q_plus_epsilon, q_moins_epsilon;
+
+    for(int i =0;i<nb_planetes;i++){
+        for(int j=0;j<nb_planetes;j++){
+            for(int coord_i =0;coord_i<3;coord_i++){
+                for(int coord_j=0;coord_j<3;coord_j++){
+
+                    q_plus_epsilon = q;
+                    q_moins_epsilon = q;
+                    q_plus_epsilon[j][coord_j] += epsilon;
+                    q_moins_epsilon[j][coord_j] -= epsilon;
+
+                    resu[3*i + coord_i][3*j + coord_j] = (dV(q_plus_epsilon)[i][coord_i]/epsilon - dV(q_moins_epsilon)[i][coord_i]/epsilon)/2.0;
+                }
+            }
+        }
+    }
+    return resu;
+}
 
 
