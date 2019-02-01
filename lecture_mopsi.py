@@ -6,22 +6,24 @@ from func import *
 
 #%%
     
-file_path = "Datas/euler_symplectique_sans_pf.txt"
+file_path = "Datas/coord.txt"
 
 nb_iterations,nb_planetes,positions,vitesses = get_data(file_path)
     
 
 #%%
 
-first_plot(nb_iterations, nb_planetes, positions)
+#first_plot(nb_iterations, nb_planetes, positions)
 
 
 #%%
 
-file_name = "test_h_tot_ES_sspf.txt"
+H = "H.txt"
+H_modifie = "H_modifie.txt"
 
-plot_H(nb_iterations, file_name)
+print(nb_iterations)
 
+plot_H(nb_iterations, H, H_modifie)
 
 
 

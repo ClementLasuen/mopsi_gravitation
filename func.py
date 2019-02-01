@@ -55,8 +55,9 @@ def plot_H(nb_iterations, file_name, file_name_modifie):
             resu1.append(float(texte))
     X=[i for i in range(nb_iterations-1)]
     plt.figure()
-    plt.plot(X,resu)
-    plt.plot(X,resu1)
+    plt.plot(X,resu, label = "normal")
+    plt.plot(X,resu1, label = "modifie")
+    plt.legend()
     plt.show()
     return()
     
