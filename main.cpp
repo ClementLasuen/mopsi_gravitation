@@ -11,11 +11,14 @@ int main(){
     cin >> h ;
 
 
-    cout << "Quelle methode numerique a utiliser ?" << endl;
-    //cout << "explicite, implicite, symplectique1,  symplectique2, Verlet" << endl;
-    cout << "EE, ES, EI ou V" << endl;
+    cout << "Quelle methode numerique utiliser ? " << endl;
+    cout << " - EE : Euler explicite " << endl;
+    cout << " - EI : Euler implicite " << endl;
+    cout << " - ES : Euler symplectique" << endl;
+    cout << " - V : Verlet" << endl;
+    cout << "EE, ES, EI ou V ?" << endl;
     cin >> methode ;
-    //FVector<FVector<double,3>,nb_planetes>* resu;
+
     bool choix_methode = true;
     if(methode == "ES") euler_symplectique(h);
     else if(methode == "EE") euler_explicite(h);
@@ -23,15 +26,10 @@ int main(){
     else if(methode == "V")  verlet(h);
     else{
         choix_methode=false;
-        cout << "choisis une methode" << endl;
+        cout << "recommencez et choisissez une methode" << endl;
     }
-
-    /*
-    Py_Initialize();
-    Py_Finalize();
-    */
-
-    system("cd ../mopsi_gravitation;python -c 'from func import *;nb_iterations, nb_planetes,positions,vitesses = get_data();enhanced_plot(nb_iterations, nb_planetes,positions,vitesses)'");
+        if(choix_methode)
+            system("cd ../mopsi_gravitation;python -c 'from func import *;nb_iterations, nb_planetes,positions,vitesses = get_data();enhanced_plot(nb_iterations, nb_planetes,positions,vitesses)'");
 
     return 0;
 
