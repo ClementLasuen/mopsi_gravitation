@@ -40,8 +40,6 @@ double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<do
     FVector<FVector<double, 3>, nb_planetes> delta_V = interaction(q);
     for(int i=0;i<nb_planetes;i++){
         for(int j=0;j<3;j++) {
-            //cout << h*p[i][j]* delta_V[i][j]/(2*m[i])  << endl;
-            //cout << p[i][j] << endl;
             resu +=  -p[i][j]* delta_V[i][j]/(2*m[i]);
         }
     }
@@ -52,34 +50,34 @@ double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<do
 
 double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<double, 3>, nb_planetes> p){
     double resu = 0.0;
-    FVector<FVector<double, 3>, nb_planetes> delta_V = interaction(q);
-    //changement_variables(delta_V);
+    FVector<FVector<double, 3>, nb_planetes> delta_V = dV(q);  //interaction(q);
+    FVector<FVector<double, 3>, nb_planetes> delta_V_M = delta_V;
+    changement_variables(delta_V_M);
     for(int i=0;i<nb_planetes;i++){
-        for(int j=0;j<3;j++)   resu += delta_V[i][j]*delta_V[i][j]/24.0;
+        for(int coord_i=0;coord_i<3;coord_i++)   resu += -delta_V[i][coord_i]*delta_V_M[i][coord_i]/24.0;
     }
 
     // Calcul de la Hessienne
 
-    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > hess = d2V(q);
+    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > hess = Hessienne(q);// Hessienne(q);
     for(int i=0;i<nb_planetes;i++){
         for(int j=0;j<nb_planetes;j++){
-            for(int k=0;k<3;k++){ // J ESSAI 24 ET PAS 12
-                for(int l=0;l<3;l++) resu +=  p[j][k]*hess[j*3 + k][i*3+l]*p[i][l] /12.0;
+            for(int coord_i=0;coord_i <3;coord_i++){
+                for(int coord_j=0;coord_j <3;coord_j++) resu += p[j][coord_j]*hess[j*3 +coord_j][i*3+coord_i]*p[i][coord_i] /12.0;
             }
         }
     }
     return resu;
-
-
 }
 
 double egalite_hessiennes(FVector<FVector<double, 3>, nb_planetes> q){
     double resu=0;
     FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > H1 = Hessienne(q);
-    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > H2 = Hessienne2(q);
+    //FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > H2 = d2V(q);
     for(int i=0;i<nb_planetes*3;i++){
         for(int j=0;j<3*nb_planetes;j++){
-            resu += (H1[i][j] - H2[i][j])*(H1[i][j] - H2[i][j]);
+            //resu += (H1[i][j] - H2[i][j])*(H1[i][j] - H2[i][j]);
+            resu += H1[i][j]*H1[i][j];
         }
     }
     return sqrt(resu);
@@ -131,49 +129,11 @@ FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne(FVector<FVector
 }
 
 
-FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > Hessienne2(FVector<FVector<double, 3>, nb_planetes> q){
-    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > result;
-
-
-    double epsilon = 0.0000000001;
-    FVector<FVector<double, 3>, nb_planetes> q_plus_epsilon_kj;
-    FVector<FVector<double, 3>, nb_planetes> q_moins_epsilon_kj;
-
-
-    FVector<FVector<double, 3>, nb_planetes> grad_plus_epsilon;
-    FVector<FVector<double, 3>, nb_planetes> grad_moins_epsilon;
-
-    for(int i =0;i <nb_planetes;i++){
-        for(int j=0;j<nb_planetes;j++){
-            for(int coord_i =0; coord_i<3;coord_i ++){
-                for(int coord_j=0;coord_j<3;coord_j++){
-
-                    q_plus_epsilon_kj = q;
-                    q_moins_epsilon_kj = q;
-
-                    q_plus_epsilon_kj[j][coord_j] += epsilon;
-                    grad_plus_epsilon = interaction(q_plus_epsilon_kj);
-
-                    q_moins_epsilon_kj[j][coord_j] -= epsilon;
-                    grad_moins_epsilon = interaction(q_moins_epsilon_kj);
-
-
-                    result[i*3 + coord_i][j*3 + coord_j] = -(grad_plus_epsilon[i][coord_i]/epsilon - grad_moins_epsilon[i][coord_i]/epsilon)/2.0;
-                }
-            }
-        }
-    }
-    return result;
-
-}
-
 // ------------------------------------------Methodes d'integration------------------------------
 
 double ecart(FVector<FVector<double, 3>, nb_planetes> q0, FVector<FVector<double,3>, nb_planetes> q1){
     double resu = 0.0;
-    for(int i=0;i<nb_planetes;i++){
-        resu += norme(q0[i] - q1[i]);
-    }
+    for(int i=0;i<nb_planetes;i++) resu += norme(q0[i] - q1[i]);
     return resu;
 }
 
@@ -257,11 +217,11 @@ void euler_explicite(double h, bool ecriture){
     }
 }
 
-// Euler imlicite
+// Euler implicite
 
 
 FVector<FVector<double, 3>, nb_planetes> *pf_euler_implicite(double h,FVector<FVector<double, 3>, nb_planetes> qn, FVector<FVector<double, 3>, nb_planetes> pn ){
-    double epsilon = 0.0000000001; // precision comment choisir epsilon ?
+    double epsilon = 0.000001; // precision comment choisir epsilon ?
     int compteur =0;
     FVector<FVector<double,3>,nb_planetes>* resu = new FVector<FVector<double,3>,nb_planetes> [2];
     FVector<FVector<double,3>,nb_planetes> q0,q1,p0,p1;
@@ -293,7 +253,7 @@ void euler_implicite(double h, bool ecriture){
 
     // --------------------------------- Initialistation ---------------------------------------------------------
 
-    FVector<FVector<double,3>,nb_planetes> p0,q0,p,q;// = {p_soleil,p_jupiter, p_saturne, p_uranus,p_neptune};
+    FVector<FVector<double,3>,nb_planetes> p0,q0,p,q;
 
     q0[0]=q_soleil;
     q0[1]=q_jupiter;
@@ -434,12 +394,10 @@ void euler_symplectique(double h, bool ecriture){
 // Verlet
 
 void changement_variables(FVector<FVector<double, 3>, nb_planetes> &p){
-    //FVector<FVector<double,3>,nb_planetes> p_ = p;
     for(int i=0;i<nb_planetes;i++) p[i]= p[i]/m[i];
 }
 
 void changement_variables_inverse(FVector<FVector<double, 3>, nb_planetes> &p){
-    //FVector<FVector<double,3>,nb_planetes> p_ = p;
     for(int i=0;i<nb_planetes;i++) p[i]= p[i]*m[i];
 }
 
@@ -463,6 +421,12 @@ void verlet(double h,bool ecriture){
 
     p = p0;
     q = q0;
+    double hamiltonien, hamiltonien_modifie;
+    double difference_grad = 0.0;
+    FVector<FVector<double, 3>, nb_planetes> grad_diff_finies;
+
+    FVector<FVector<double, 3>, nb_planetes> grad_initial = dV(q);
+
     //-------------------------------------------------------------------------------------------------------------
 
     string file_name = string("../mopsi_gravitation/Datas/coord.txt");
@@ -488,37 +452,54 @@ void verlet(double h,bool ecriture){
         changement_variables(p);
 
         FVector<FVector<double, 3>, nb_planetes> force = interaction(q);
-        //force_1 = interaction(q0);
-        //force = interaction(q);
+
         for(int i = 0;i<nb_iterations-1;i++){
 
             if (i%int(nb_iterations/100)==0)
                 cout << int(i/int(nb_iterations/100)) << endl;
 
-            //force = force_1;
 
             for(int j=0;j<nb_planetes;j++){
                 p[j] += force[j]*h/(2.0*m[j]);
                 q[j] += h*p[j];
             }
-            //force_1 = interaction(q);
-            force = interaction(q);
-            for(int j =0;j<nb_planetes;j++){
-                p[j] += h*force[j]/(2.0*m[j]);
 
-            }
+            force = interaction(q);
+
+            for(int j =0;j<nb_planetes;j++)  p[j] += h*force[j]/(2.0*m[j]);
+
             if(ecriture){
                 for(int j=0;j<nb_planetes;j++)
                     fichier << q[j][0] << " " << q[j][1] << " " << q[j][2] << " " <<p[j][0] << " " << p[j][1] << " " << p[j][2]<< " "; // On ecrit les positions puis vitesses d'une planete
             fichier << endl;
 
             changement_variables_inverse(p);
-
-            fichier_H << H(q,p);
-
-            fichier_H << endl;
-            fichier_H_modifie << H(q,p) + h*h*H_modifie_V(q,p);
+            hamiltonien = H(q,p);
             changement_variables(p);
+
+            fichier_H << hamiltonien;
+            fichier_H << endl;
+
+            fichier_H_modifie << hamiltonien + h*h*H_modifie_V(q,p);
+            //fichier_H_modifie << h*h*H_modifie_V(q,p);
+            //fichier_H_modifie << egalite_hessiennes(q);
+
+            // Test on retrouve le gradient ?
+
+            /*
+            difference_grad = 0;
+            grad_diff_finies = dV(q); // Attention, - dV = force
+            for(int i=0;i<nb_planetes;i++){   //difference_grad += (force[i] + grad_diff_finies[i])*(force[i] + grad_diff_finies[i]);
+                for(int coord =0;coord<3;coord++){
+                    difference_grad += (grad_diff_finies[i][coord] - grad_initial[i][coord])*(grad_diff_finies[i][coord] - grad_initial[i][coord]);
+                }
+            }
+
+            fichier_H_modifie << sqrt(difference_grad);
+
+            */
+
+            //changement_variables(p);
             fichier_H_modifie << endl;
             }
             p0=p;
@@ -544,7 +525,7 @@ double V(FVector<FVector<double, 3>, nb_planetes> q){
 }
 
 FVector<FVector<double, 3>, nb_planetes> dV(FVector<FVector<double, 3>, nb_planetes> q){
-    double epsilon = 0.0000000001;
+    double epsilon = 0.0001;
     FVector<FVector<double, 3>, nb_planetes> grad , q_plus_epsilon , q_moins_epsilon ;
 
     for(int i=0;i<nb_planetes;i++){
@@ -554,14 +535,14 @@ FVector<FVector<double, 3>, nb_planetes> dV(FVector<FVector<double, 3>, nb_plane
             q_plus_epsilon[i][coord] += epsilon;
             q_moins_epsilon[i][coord] -= epsilon;
 
-            grad[i][coord] = (V(q_plus_epsilon) - V(q_moins_epsilon))/2.0/epsilon;
+            grad[i][coord] = (V(q_plus_epsilon)/epsilon - V(q_moins_epsilon)/epsilon)/2.0;
         }
     }
     return grad;
 }
 
 FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > d2V(FVector<FVector<double, 3>, nb_planetes> q){
-    double epsilon = 0.0000000001;
+    double epsilon = 0.0001;
     FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > resu;
 
     FVector<FVector<double, 3>, nb_planetes> q_plus_epsilon, q_moins_epsilon;
@@ -574,14 +555,12 @@ FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > d2V(FVector<FVector<doubl
                     q_plus_epsilon = q;
                     q_moins_epsilon = q;
                     q_plus_epsilon[j][coord_j] += epsilon;
-                    q_moins_epsilon[j][coord_j] -= epsilon;
+                    q_moins_epsilon[j][coord_j] += - epsilon;
 
-                    resu[3*i + coord_i][3*j + coord_j] = (dV(q_plus_epsilon)[i][coord_i] - dV(q_moins_epsilon)[i][coord_i])/2.0/epsilon;
+                    resu[3*i + coord_i][3*j + coord_j] = (dV(q_plus_epsilon)[i][coord_i]/epsilon - dV(q_moins_epsilon)[i][coord_i]/epsilon)/2.0;
                 }
             }
         }
     }
     return resu;
 }
-
-
