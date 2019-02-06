@@ -53,18 +53,17 @@ double H_modifie_ES(FVector<FVector<double,3>,nb_planetes> q, FVector<FVector<do
 double H_modifie_V(FVector<FVector<double, 3>, nb_planetes> q, FVector<FVector<double, 3>, nb_planetes> p){
     double resu = 0.0;
     FVector<FVector<double, 3>, nb_planetes> delta_V = interaction(q);
-    //changement_variables(delta_V);
     for(int i=0;i<nb_planetes;i++){
-        for(int j=0;j<3;j++)   resu += delta_V[i][j]*delta_V[i][j]/24.0;
+        for(int j=0;j<3;j++)   resu -= delta_V[i][j]*delta_V[i][j]/24.0/m[i];
     }
 
     // Calcul de la Hessienne
 
-    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > hess = d2V(q);
+    FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > hess = Hessienne(q); // a changer en fonction de la hessienne à utiliser
     for(int i=0;i<nb_planetes;i++){
         for(int j=0;j<nb_planetes;j++){
             for(int k=0;k<3;k++){ // J ESSAI 24 ET PAS 12
-                for(int l=0;l<3;l++) resu +=  p[j][k]*hess[j*3 + k][i*3+l]*p[i][l] /12.0;
+                for(int l=0;l<3;l++) resu +=  p[j][k]*hess[j*3+k][i*3+l]*p[i][l] /12.0;
             }
         }
     }
@@ -544,7 +543,7 @@ double V(FVector<FVector<double, 3>, nb_planetes> q){
 }
 
 FVector<FVector<double, 3>, nb_planetes> dV(FVector<FVector<double, 3>, nb_planetes> q){
-    double epsilon = 0.0000000001;
+    double epsilon = 0.01;
     FVector<FVector<double, 3>, nb_planetes> grad , q_plus_epsilon , q_moins_epsilon ;
 
     for(int i=0;i<nb_planetes;i++){
@@ -554,14 +553,14 @@ FVector<FVector<double, 3>, nb_planetes> dV(FVector<FVector<double, 3>, nb_plane
             q_plus_epsilon[i][coord] += epsilon;
             q_moins_epsilon[i][coord] -= epsilon;
 
-            grad[i][coord] = (V(q_plus_epsilon) - V(q_moins_epsilon))/2.0/epsilon;
+            grad[i][coord] = (V(q_plus_epsilon) - V(q_moins_epsilon))/(2.0*epsilon);
         }
     }
     return grad;
 }
 
 FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > d2V(FVector<FVector<double, 3>, nb_planetes> q){
-    double epsilon = 0.0000000001;
+    double epsilon = 0.01;
     FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > resu;
 
     FVector<FVector<double, 3>, nb_planetes> q_plus_epsilon, q_moins_epsilon;
@@ -576,7 +575,7 @@ FVector<FVector<double, 3*nb_planetes>,3*nb_planetes > d2V(FVector<FVector<doubl
                     q_plus_epsilon[j][coord_j] += epsilon;
                     q_moins_epsilon[j][coord_j] -= epsilon;
 
-                    resu[3*i + coord_i][3*j + coord_j] = (dV(q_plus_epsilon)[i][coord_i] - dV(q_moins_epsilon)[i][coord_i])/2.0/epsilon;
+                    resu[3*i + coord_i][3*j + coord_j] = (dV(q_plus_epsilon)[i][coord_i] - dV(q_moins_epsilon)[i][coord_i])/(2.0*epsilon);
                 }
             }
         }
