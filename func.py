@@ -150,7 +150,8 @@ def enhanced_plot(nb_iterations, nb_planetes, positions, vitesses):
         value+=1
         return()
     
-    
+    # Permet de gerer la vitesse d'affichage
+    # Le temps entre deux affichages est value millisecondes
     s = slider(bind = rate_modif,min=1, max=150, value=20)
     scene.append_to_caption('')
     b = button(bind = pause, action = pause, text='play/pause')
@@ -161,6 +162,8 @@ def enhanced_plot(nb_iterations, nb_planetes, positions, vitesses):
         
         if pause_var:
             continue
+            
+        # mise à jour de la position des planètes
         
         pos1=vector(positions[i][0][1],positions[i][0][2],positions[i][0][0])
         soleil.pos=pos1
