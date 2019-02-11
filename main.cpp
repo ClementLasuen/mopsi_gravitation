@@ -7,7 +7,7 @@ int main(){
     double h;
     string methode;
 
-    cout << "Quel est le pas de temps ? " << endl;
+    cout << "Quel est le pas de temps ? (inferieur a 200)" << endl;
     cin >> h ;
 
 
