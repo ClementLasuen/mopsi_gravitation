@@ -13,7 +13,8 @@ import scipy.optimize as so
 from mpl_toolkits.mplot3d import Axes3D
 from vpython import *
 
-
+# Cette fonction stocke les données le fichier coord.txt dans les vecteurs positions et vitesses
+# position[i,j,x] est la coordonnée x de la planète j à l'itération i (idem pour les vitesses).
 def get_data(file_path = "Datas/coord.txt"):
     # Lit le fichier C++ avec les données
     path = file_path
@@ -40,7 +41,10 @@ def get_data(file_path = "Datas/coord.txt"):
                 vitesses[i,j,1] = float(coordonnees[6*j+4])
                 vitesses[i,j,2] = float(coordonnees[6*j+5])
         return(nb_iterations,nb_planetes,positions,vitesses)
-        
+
+# Cette fonction trace l'énergie (hamiltonien) du système en fonction des itérations.
+# Les valeurs de H sont calculées lors du calcul des positions et de vitesses puis stockées
+# dans le fichier H.txt ou H_modifie.txt
 def plot_H(nb_iterations, file_name, file_name_modifie):
     # Lit le fichier C++ avec les valeurs de H, et les affiches
     resu=[]
@@ -83,7 +87,10 @@ def enhanced_plot(nb_iterations, nb_planetes, positions, vitesses):
     scene.fullscreen = 1
     
     scene.camera.pos = vector(0,0,0)
-        
+    
+    
+    # Initialisation des planètes
+    
     pos1=vector(positions[0][0][0],positions[0][0][1],positions[0][0][2])
     soleil = sphere(pos=pos1,radius =4,texture = 'sun.jpg', emissive =True,
                     interval=10)
@@ -104,19 +111,24 @@ def enhanced_plot(nb_iterations, nb_planetes, positions, vitesses):
     pos1=vector(positions[0][4][0],positions[0][4][1],positions[0][4][2])
     neptune = sphere(pos=pos1,radius =2,texture = 'neptune.jpg',
                      interval=10)
+    # Affichage de la trajectoire
     
     jupiter.trail = curve(color = vector(1,0.8,0.65), radius=0.05)
     saturne.trail = curve(color = vector(1,0.8,0.5), radius=0.05)
     uranus.trail = curve(color = color.cyan, radius=0.05)
     neptune.trail = curve(color = color.blue, radius=0.05)
     
+    # Affichage de l'anneau de Saturne 
     precious = ring(pos=saturne.pos, axis = saturne.pos,radius = 3, thickness=0.1)
     
     scene.autoscale=False
     
     lamp = local_light(pos=vector(0,0,0), color=color.white)
+    
+    # On ajoute un décor
     decor = sphere(pos=vector(0,0,0),radius = 80,texture='ciel.jpg')
     
+    # vecteur de rotation des planètes sur elles-mêmes
     rotation = vector(-0.5,1,0)
     
     
