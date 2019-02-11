@@ -111,6 +111,7 @@ def enhanced_plot(nb_iterations, nb_planetes, positions, vitesses):
     pos1=vector(positions[0][4][0],positions[0][4][1],positions[0][4][2])
     neptune = sphere(pos=pos1,radius =2,texture = 'neptune.jpg',
                      interval=10)
+    
     # Affichage de la trajectoire
     
     jupiter.trail = curve(color = vector(1,0.8,0.65), radius=0.05)
@@ -121,8 +122,10 @@ def enhanced_plot(nb_iterations, nb_planetes, positions, vitesses):
     # Affichage de l'anneau de Saturne 
     precious = ring(pos=saturne.pos, axis = saturne.pos,radius = 3, thickness=0.1)
     
+    # Permet que l'echelle soit mise de facon a voir toutes les planetes
     scene.autoscale=False
     
+    #Le soleil est source de lumiere
     lamp = local_light(pos=vector(0,0,0), color=color.white)
     
     # On ajoute un décor
@@ -163,7 +166,7 @@ def enhanced_plot(nb_iterations, nb_planetes, positions, vitesses):
         if pause_var:
             continue
             
-        # mise à jour de la position des planètes
+        # mise à jour de la position des planètes, de leur trace, et de leur rotation
         
         pos1=vector(positions[i][0][1],positions[i][0][2],positions[i][0][0])
         soleil.pos=pos1
